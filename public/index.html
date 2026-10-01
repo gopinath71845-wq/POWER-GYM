@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Power Gym | Elite Fitness, Bodybuilding & High-Performance Strength</title>
+  <meta name="description" content="The Power Gym - Premier high-performance fitness center in India with Olympic lifting, personal coaching, and Indian UPI payments.">
+  
+  <link rel="icon" type="image/svg+xml" href="static/images/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar" id="mainNavbar">
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="static/images/logo.svg" alt="The Power Gym Logo">
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="#plans">Membership Plans</a></li>
+          <li><a href="#trainers">Trainers</a></li>
+          <li><a href="#payment-info">Scan & Pay (UPI)</a></li>
+          <li><a href="#bmi">BMI Tool</a></li>
+          <li><a href="login.html" class="nav-portal-badge nav-portal-member">Member Portal</a></li>
+          <li><a href="staff-login.html" class="nav-portal-badge nav-portal-staff">Staff Portal</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="register.html" class="btn btn-primary btn-sm">Join Now</a>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" style="background-image: url('static/images/hero_bg.jpg');">
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          Premier High-Performance Fitness Center in India
+        </div>
+        <h1 class="hero-title">
+          FORGE YOUR <span class="neon-text">IRON WILL</span> AT THE POWER GYM
+        </h1>
+        <p class="hero-subtitle">
+          State-of-the-art biomechanical equipment, certified elite coaches, customized Indian nutrition protocols, and a ruthless commitment to your physical transformation.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#plans" class="btn btn-primary btn-lg">Explore Membership Plans</a>
+          <a href="#payment-info" class="btn btn-outline btn-lg">Scan & Pay via UPI</a>
+        </div>
+
+        <div class="hero-metrics">
+          <div>
+            <div class="metric-number">2,500+</div>
+            <div class="metric-label">Active Members</div>
+          </div>
+          <div>
+            <div class="metric-number">15+</div>
+            <div class="metric-label">Certified Trainers</div>
+          </div>
+          <div>
+            <div class="metric-number">99.4%</div>
+            <div class="metric-label">Goal Satisfaction</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Facility Highlights -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Welcome to The Power Gym</span>
+        <h2 class="section-title">Built For <span class="neon-text">Uncompromising</span> Results</h2>
+        <p class="section-desc">
+          Engineered to push boundaries, build functional strength, and sculpt elite physiques with persistent digital progress tracking.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" style="color: var(--neon-green);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18h12M6 6h12M9 12h6"></path><circle cx="3" cy="18" r="1"></circle><circle cx="3" cy="6" r="1"></circle><circle cx="21" cy="18" r="1"></circle><circle cx="21" cy="6" r="1"></circle></svg>
+          </div>
+          <h3 class="feature-title">Heavy Iron & Olympic Platforms</h3>
+          <p class="feature-text">
+            Calibrated competition plates, rogue barbells, specialized deadlift jacks, and heavy-duty power cages for serious lifters and beginners alike.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="color: var(--neon-green);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <h3 class="feature-title">Customized Trainer Programs</h3>
+          <p class="feature-text">
+            Choose your dedicated coach. Each trainer designs a progressive overload regimen tailored specifically to your body type, goals, and schedule.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="color: var(--neon-green);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          </div>
+          <h3 class="feature-title">Tailored Indian Nutrition Plans</h3>
+          <p class="feature-text">
+            Our sports nutritionists design vegetarian, non-veg, and high-protein Indian meal plans with exact macro breakdowns.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="color: var(--neon-green);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+          </div>
+          <h3 class="feature-title">Steam, Sauna & Recovery Lounge</h3>
+          <p class="feature-text">
+            Speed up muscle recovery, eliminate toxins, and de-stress with our eucalyptus steam rooms, Swedish dry sauna, and luxury locker facilities.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Plans Section -->
+  <section class="section section-dark" id="plans">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Transparent Pricing in INR (₹)</span>
+        <h2 class="section-title">Choose Your <span class="neon-text">Battle Plan</span></h2>
+        <p class="section-desc">
+          All memberships include full floor access, locker rooms, and persistent member dashboard tracking stored in our SQL database.
+        </p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- 1 Month -->
+        <div class="pricing-card">
+          <h3 class="pricing-name">Starter Beast (Monthly)</h3>
+          <p class="pricing-duration">1 Month Full Membership</p>
+          <div class="pricing-price">
+            <span class="currency">₹</span>
+            <span class="amount">999</span>
+            <span class="period">/ 1 mo</span>
+          </div>
+          <ul class="pricing-features">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Full Strength & Free Weights Zone Access</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Cardio Theatre Access</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Clean Locker Rooms & Hot Showers</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> 1 Free Fitness Assessment</li>
+          </ul>
+          <div style="margin-top: auto;">
+            <a href="register.html?plan_id=1" class="btn btn-outline" style="width: 100%;">Join Now (₹999)</a>
+          </div>
+        </div>
+
+        <!-- 3 Months -->
+        <div class="pricing-card featured">
+          <div class="featured-tag">Recommended Plan</div>
+          <h3 class="pricing-name">Power Pro (3 Months)</h3>
+          <p class="pricing-duration">3 Months Full Membership</p>
+          <div class="pricing-price">
+            <span class="currency">₹</span>
+            <span class="amount">2,499</span>
+            <span class="period">/ 3 mo</span>
+          </div>
+          <ul class="pricing-features">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Everything in Starter Beast Plan</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Customized Workout Split (Push-Pull-Legs)</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Indian Macro & Diet Chart</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Dedicated Coach Consultation</li>
+          </ul>
+          <div style="margin-top: auto;">
+            <a href="register.html?plan_id=2" class="btn btn-primary" style="width: 100%;">Join Now (₹2,499)</a>
+          </div>
+        </div>
+
+        <!-- 6 Months -->
+        <div class="pricing-card">
+          <h3 class="pricing-name">Iron Warrior (6 Months)</h3>
+          <p class="pricing-duration">6 Months Full Membership</p>
+          <div class="pricing-price">
+            <span class="currency">₹</span>
+            <span class="amount">4,499</span>
+            <span class="period">/ 6 mo</span>
+          </div>
+          <ul class="pricing-features">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited Steam & Sauna Access</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Bi-Weekly Body Composition & InBody Scans</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Advanced Hypertrophy & Strength Cycles</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Free The Power Gym Shaker Bottle</li>
+          </ul>
+          <div style="margin-top: auto;">
+            <a href="register.html?plan_id=3" class="btn btn-outline" style="width: 100%;">Join Now (₹4,499)</a>
+          </div>
+        </div>
+
+        <!-- 12 Months -->
+        <div class="pricing-card">
+          <h3 class="pricing-name">Legend Titan (1 Year)</h3>
+          <p class="pricing-duration">12 Months Full Membership</p>
+          <div class="pricing-price">
+            <span class="currency">₹</span>
+            <span class="amount">7,999</span>
+            <span class="period">/ 12 mo</span>
+          </div>
+          <ul class="pricing-features">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Maximum Value - Lowest Monthly Rate</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> 5 Free 1-on-1 Personal Training Sessions</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> 45-Day Free Membership Freeze Policy</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> The Power Gym Official Lifting Straps</li>
+          </ul>
+          <div style="margin-top: auto;">
+            <a href="register.html?plan_id=4" class="btn btn-outline" style="width: 100%;">Join Now (₹7,999)</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Indian UPI Payment Section -->
+  <section class="section" id="payment-info">
+    <div class="container">
+      <div class="payment-showcase">
+        <div>
+          <span class="section-badge">Indian Payment Methods: Online & Offline</span>
+          <h2 class="section-title" style="margin-bottom: 20px;">Fast Checkout via <span class="neon-text">UPI & Front Desk Cash</span></h2>
+          <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 1.05rem; line-height: 1.6;">
+            Zero transaction fees. Pay directly to <strong>The Power Gym</strong> official merchant UPI account. Scan the attached QR code or pay cash at our gym counter.
+          </p>
+
+          <div style="background: rgba(0, 255, 102, 0.05); border: 1px solid var(--border-neon); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+            <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">Official Merchant UPI ID:</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+              <span style="font-family: monospace; font-size: 1.3rem; font-weight: 800; color: var(--neon-green);">
+                gopinath71845@oksbi
+              </span>
+              <button class="btn btn-outline btn-sm btn-copy-upi" data-upi="gopinath71845@oksbi">
+                Copy UPI ID
+              </button>
+            </div>
+            <div style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 10px;">
+              Beneficiary Name: <strong>Gopinath (The Power Gym)</strong> | Bank: <strong>State Bank of India (SBI)</strong>
+            </div>
+          </div>
+
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 18px; margin-bottom: 24px;">
+            <div style="font-weight: 700; color: #FFF; margin-bottom: 6px;">Offline Payment Option:</div>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+              Prefer paying in person? Select your plan in the portal and choose <strong>Front Desk Cash</strong> to generate a payment voucher slip, or pay directly at our gym reception desk.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <a href="upi://pay?pa=gopinath71845@oksbi&pn=The%20Power%20Gym&mc=5411" class="btn btn-primary">
+              Pay with GPay / PhonePe / Paytm
+            </a>
+            <a href="payment.html" class="btn btn-secondary">
+              Direct UPI Checkout
+            </a>
+            <a href="register.html" class="btn btn-outline">
+              Join Membership
+            </a>
+          </div>
+        </div>
+
+        <div class="qr-box-card">
+          <h3 style="font-size: 1.25rem; margin-bottom: 8px; color: var(--neon-green);">Official Merchant QR Code</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Scan with Google Pay, PhonePe, Paytm, or BHIM</p>
+          
+          <div style="background: #fff; padding: 14px; border-radius: 14px; display: inline-block; margin-bottom: 14px;">
+            <img src="static/images/qr_code.jpg" alt="Google Pay QR Code for The Power Gym" class="qr-image-display" style="width: 240px; height: 240px; display: block; object-fit: contain;">
+          </div>
+          
+          <div style="font-size: 0.88rem; color: var(--text-secondary);">
+            UPI ID: <strong style="color: #fff; font-family: monospace;">gopinath71845@oksbi</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certified Trainers Section -->
+  <section class="section section-dark" id="trainers">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Elite Certified Coaching Staff</span>
+        <h2 class="section-title">Train With The <span class="neon-text">Champions</span></h2>
+        <p class="section-desc">
+          Customize your training journey. Choose your personal mentor for 1-on-1 guidance and contest prep.
+        </p>
+      </div>
+
+      <div class="trainers-grid">
+        <div class="trainer-card">
+          <div class="trainer-img-wrapper">
+            <img src="static/images/trainer_alex.jpg" alt="Alex Vance">
+            <div class="trainer-badge">Rating: 4.9 / 5.0</div>
+          </div>
+          <div class="trainer-info">
+            <h3 class="trainer-name">Alex Vance</h3>
+            <div class="trainer-spec">Powerlifting & Heavy Compound Strength</div>
+            <p class="trainer-bio">Certified NSCA Powerlifting Coach with over 7 years coaching lifters. Specializes in squat, bench, and deadlift biomechanics.</p>
+            <div class="trainer-footer">
+              <span class="trainer-exp">7+ Years Coaching Exp</span>
+              <a href="register.html?trainer=1" class="btn btn-outline btn-sm">Select Coach</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="trainer-card">
+          <div class="trainer-img-wrapper">
+            <img src="static/images/trainer_maya.jpg" alt="Maya Sharma">
+            <div class="trainer-badge">Rating: 4.9 / 5.0</div>
+          </div>
+          <div class="trainer-info">
+            <h3 class="trainer-name">Maya Sharma</h3>
+            <div class="trainer-spec">HIIT, Functional Cross-Training & Mobility</div>
+            <p class="trainer-bio">Former athlete and certified functional fitness coach. Dedicated to high-octane conditioning, stamina, and posture alignment.</p>
+            <div class="trainer-footer">
+              <span class="trainer-exp">5+ Years Coaching Exp</span>
+              <a href="register.html?trainer=2" class="btn btn-outline btn-sm">Select Coach</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="trainer-card">
+          <div class="trainer-img-wrapper">
+            <img src="static/images/trainer_vikram.jpg" alt="Vikram Raj">
+            <div class="trainer-badge">Rating: 5.0 / 5.0</div>
+          </div>
+          <div class="trainer-info">
+            <h3 class="trainer-name">Vikram Raj</h3>
+            <div class="trainer-spec">Hypertrophy, Bodybuilding & Nutrition Architecture</div>
+            <p class="trainer-bio">Gold-certified fitness nutritionist and physique competitor. Master of progressive overload, macro-nutrient timing, and lean muscle gain.</p>
+            <div class="trainer-footer">
+              <span class="trainer-exp">6+ Years Coaching Exp</span>
+              <a href="register.html?trainer=3" class="btn btn-outline btn-sm">Select Coach</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive BMI Calculator -->
+  <section class="section" id="bmi">
+    <div class="container">
+      <div class="bmi-container">
+        <div>
+          <span class="section-badge">Health Metric Tool</span>
+          <h2 class="section-title" style="margin-bottom: 16px;">Calculate Your <span class="neon-text">BMI Status</span></h2>
+          <p style="color: var(--text-secondary); margin-bottom: 24px;">
+            Body Mass Index (BMI) gives an instant baseline of your body composition to help our coaches design your customized workout split.
+          </p>
+
+          <form id="bmiForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="bmiWeight">Weight (in Kilograms - kg)</label>
+              <input type="number" id="bmiWeight" class="form-control" placeholder="e.g. 75" min="30" max="250" step="0.5" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bmiHeight">Height (in Centimeters - cm)</label>
+              <input type="number" id="bmiHeight" class="form-control" placeholder="e.g. 178" min="100" max="240" step="1" required>
+            </div>
+            <div style="grid-column: span 2;">
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Calculate Body Mass Index
+              </button>
+            </div>
+          </form>
+
+          <div id="bmiResult" class="bmi-result-box" style="display: none; margin-top: 20px;">
+            <div style="font-size: 0.9rem; color: var(--text-muted);">Your Calculated BMI:</div>
+            <div id="bmiNumber" style="font-size: 2.8rem; font-weight: 900; font-family: var(--font-heading); color: var(--neon-green);">--</div>
+            <div id="bmiCategory" style="font-size: 1.1rem; font-weight: 700; color: #fff;">--</div>
+            <p id="bmiAdvice" style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 8px;">--</p>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="font-size: 1.3rem; margin-bottom: 16px; color: #FFF;">BMI Classification Reference</h3>
+          <table class="table-custom" style="font-size: 0.9rem;">
+            <thead>
+              <tr>
+                <th>BMI Range</th>
+                <th>Category</th>
+                <th>Recommended Goal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>&lt; 18.5</td>
+                <td style="color: #64B5F6;">Underweight</td>
+                <td>Hypertrophy & Surplus Nutrition</td>
+              </tr>
+              <tr>
+                <td>18.5 - 24.9</td>
+                <td style="color: var(--neon-green);">Normal / Fit</td>
+                <td>Strength & Athletic Conditioning</td>
+              </tr>
+              <tr>
+                <td>25.0 - 29.9</td>
+                <td style="color: #FFAA00;">Overweight</td>
+                <td>Fat Loss & Progressive Resistance</td>
+              </tr>
+              <tr>
+                <td>30.0 +</td>
+                <td style="color: #FF5252;">Obese</td>
+                <td>Cardiovascular HIIT & Calorie Deficit</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <img src="static/images/logo.svg" alt="The Power Gym Logo" style="height: 44px; margin-bottom: 18px;">
+          <p style="margin-bottom: 20px; font-size: 0.95rem; line-height: 1.6;">
+            The Power Gym is India's ultimate high-performance fitness destination. Equipped with world-class strength machines, certified trainers, and personalized nutrition protocols.
+          </p>
+          <div>
+            <span class="upi-id-pill btn-copy-upi" data-upi="gopinath71845@oksbi" title="Click to copy UPI ID">
+              UPI: gopinath71845@oksbi [Copy]
+            </span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#plans">Membership Pricing</a></li>
+            <li><a href="#trainers">Personal Trainers</a></li>
+            <li><a href="#bmi">BMI Calculator</a></li>
+            <li><a href="login.html">Member Portal</a></li>
+            <li><a href="staff-dashboard.html">Staff & Trainer Portal</a></li>
+            <li><a href="staff-register.html">Staff Registration</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Hours & Facility</h4>
+          <ul>
+            <li><strong>Mon - Sat:</strong> 5:30 AM - 10:30 PM</li>
+            <li><strong>Sunday:</strong> 6:00 AM - 8:00 PM</li>
+            <li>Heavy Powerlifting Zone</li>
+            <li>Olympic Lifting Platforms</li>
+            <li>Steam, Sauna & Hot Showers</li>
+            <li>Dedicated Nutrition Cafe</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Location & Contact</h4>
+          <p style="margin-bottom: 10px;"><strong>The Power Gym</strong><br>No. 18, Fitness Boulevard, Neon Arcade, Metro City, India</p>
+          <p style="margin-bottom: 8px;"><strong>Phone:</strong> +91 98765 43210</p>
+          <p style="margin-bottom: 8px;"><strong>Email:</strong> contact@thepowergym.in</p>
+          <p style="color: var(--neon-green); font-size: 0.9rem; font-weight: 700;">Merchant UPI: gopinath71845@oksbi</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 The Power Gym. All Rights Reserved. Built with HTML, CSS & Modern JS.</div>
+        <div style="display: flex; gap: 20px;">
+          <a href="staff-dashboard.html" style="color: #FFAA00;">Staff Console</a>
+          <a href="login.html">Member Login</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="static/js/gym-store.js"></script>
+  <script src="static/js/main.js"></script>
+</body>
+</html>

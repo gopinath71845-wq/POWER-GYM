@@ -1,0 +1,560 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Portal | The Power Gym{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-profile">
+      <div class="profile-avatar-wrapper">
+        <img id="sidebarAvatarImg" src="{{ url_for('serve_media', filename=(profile.avatar if profile.avatar else 'default_avatar.png')) }}" alt="{{ profile.full_name }}" onerror="this.src='{{ url_for('static', filename='images/default_avatar.png') }}'">
+      </div>
+      <h3 class="sidebar-username">{{ profile.full_name }}</h3>
+      <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">@{{ current_user.username }}</div>
+      <span class="sidebar-badge badge-customer">Member ID #TPG-{{ current_user.id + 1000 }}</span>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li>
+        <button class="sidebar-link active" data-tab="overview">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Overview & Stats
+        </button>
+      </li>
+      <li>
+        <button class="sidebar-link" data-tab="profile">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Edit Profile & Photo
+        </button>
+      </li>
+      <li>
+        <button class="sidebar-link" data-tab="trainer">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Choose Trainer
+        </button>
+      </li>
+      <li>
+        <button class="sidebar-link" data-tab="payments">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+          Payments & UPI QR
+        </button>
+      </li>
+      <li>
+        <button class="sidebar-link" data-tab="workout">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18h12M6 6h12M9 12h6"></path><circle cx="3" cy="18" r="1"></circle><circle cx="3" cy="6" r="1"></circle><circle cx="21" cy="18" r="1"></circle><circle cx="21" cy="6" r="1"></circle></svg>
+          Workout Schedule
+        </button>
+      </li>
+    </ul>
+
+    <div style="padding-top: 20px; border-top: 1px solid var(--border-subtle); margin-top: auto;">
+      <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm" style="width: 100%; color: #ff6666;">
+        Log Out
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="dashboard-content">
+
+    <!-- TAB 1: OVERVIEW -->
+    <div class="tab-content active" id="overview">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Welcome Back, <span class="neon-text">{{ profile.full_name }}</span></h1>
+          <p class="dash-subtitle">Track your membership validity, assigned trainer, health metrics, and payment records.</p>
+        </div>
+        <div>
+          <button class="btn btn-primary btn-sm btn-copy-upi" data-upi="gopinath71845@oksbi">
+            Pay Fee: gopinath71845@oksbi
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">Membership Status</div>
+          <div class="stat-value" style="font-size: 1.6rem; color: {% if active_membership %}var(--neon-green){% else %}#FFAA00{% endif %};">
+            {% if active_membership %}ACTIVE{% else %}PENDING{% endif %}
+          </div>
+          <div class="stat-desc">
+            {% if active_membership %}
+              Valid till {{ active_membership.end_date.strftime('%d %b, %Y') }}
+            {% else %}
+              No active plan. Please subscribe below.
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-title">Selected Coach</div>
+          <div class="stat-value" style="font-size: 1.4rem;">
+            {% if active_membership and active_membership.trainer %}
+              {{ active_membership.trainer.name }}
+            {% else %}
+              Not Assigned
+            {% endif %}
+          </div>
+          <div class="stat-desc">
+            <a href="#trainer" onclick="document.querySelector('[data-tab=trainer]').click();" style="color: var(--neon-green); text-decoration: underline;">Change / Select Coach</a>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-title">BMI Index</div>
+          <div class="stat-value" style="color: var(--neon-green);">
+            {{ bmi if bmi else '23.5' }}
+          </div>
+          <div class="stat-desc">Weight: {{ profile.weight_kg if profile.weight_kg else 72 }} kg | Height: {{ profile.height_cm if profile.height_cm else 175 }} cm</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-title">Current Goal</div>
+          <div class="stat-value" style="font-size: 1.15rem; line-height: 1.3;">
+            {{ profile.fitness_goal }}
+          </div>
+          <div class="stat-desc">Target: Hypertrophy & Progressive Strength</div>
+        </div>
+      </div>
+
+      <!-- Active Plan Banner -->
+      <div class="plan-status-banner">
+        <div class="plan-status-info">
+          <span style="font-size: 0.82rem; text-transform: uppercase; color: var(--neon-green); font-weight: 700; letter-spacing: 0.1em;">Current Membership Tier</span>
+          <h3>{{ active_plan.name if active_plan else 'Starter Beast (Monthly)' }}</h3>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">
+            Price: <strong style="color: #fff;">₹{{ "{:,.0f}".format(active_plan.price if active_plan else 999) }}</strong>
+            {% if active_membership %}
+              | Valid: {{ active_membership.start_date.strftime('%d %b %Y') }} to {{ active_membership.end_date.strftime('%d %b %Y') }}
+            {% endif %}
+          </p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <a href="#payments" onclick="document.querySelector('[data-tab=payments]').click();" class="btn btn-primary">
+            Renew / Pay Fee
+          </a>
+        </div>
+      </div>
+
+      <!-- Trainer Showcase in Overview -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h3 class="dash-card-title">Assigned Personal Trainer</h3>
+          <button class="btn btn-outline btn-sm" onclick="document.querySelector('[data-tab=trainer]').click();">
+            Switch Trainer
+          </button>
+        </div>
+
+        {% if active_membership and active_membership.trainer %}
+          <div class="my-trainer-box">
+            <img src="{{ url_for('serve_media', filename=active_membership.trainer.photo) }}" alt="{{ active_membership.trainer.name }}" class="my-trainer-img" onerror="this.src='{{ url_for('static', filename='images/default_avatar.png') }}'">
+            <div>
+              <h4 style="font-size: 1.4rem; margin-bottom: 4px;">{{ active_membership.trainer.name }}</h4>
+              <div style="color: var(--neon-green); font-weight: 600; font-size: 0.95rem; margin-bottom: 8px;">{{ active_membership.trainer.specialty }}</div>
+              <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 12px;">{{ active_membership.trainer.bio }}</p>
+              <div style="font-size: 0.88rem; color: var(--text-muted);">
+                Phone: <strong style="color: #fff;">{{ active_membership.trainer.phone }}</strong> | Rating: {{ active_membership.trainer.rating }} / 5.0
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div style="text-align: center; padding: 30px; background: rgba(0, 255, 102, 0.03); border: 1px dashed var(--border-neon); border-radius: var(--radius-md);">
+            <p style="color: var(--text-secondary); margin-bottom: 16px;">You have not assigned a personal coach to your profile yet.</p>
+            <button class="btn btn-primary btn-sm" onclick="document.querySelector('[data-tab=trainer]').click();">Choose My Coach Now</button>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- TAB 2: PROFILE EDIT & PHOTO UPLOAD -->
+    <div class="tab-content" id="profile">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Customized <span class="neon-text">Member Profile</span></h1>
+          <p class="dash-subtitle">Upload your avatar to the local server and update fitness stats. All data persists in the SQL database.</p>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <form action="{{ url_for('update_customer_profile') }}" method="POST" enctype="multipart/form-data">
+          
+          <!-- Avatar Upload -->
+          <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 30px; padding-bottom: 24px; border-bottom: 1px solid var(--border-subtle); flex-wrap: wrap;">
+            <div style="width: 100px; height: 100px; border-radius: 50%; overflow: hidden; border: 2px solid var(--neon-green); box-shadow: 0 0 15px var(--neon-green-glow);">
+              <img id="avatarPreviewImg" src="{{ url_for('serve_media', filename=(profile.avatar if profile.avatar else 'default_avatar.png')) }}" alt="Avatar Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='{{ url_for('static', filename='images/default_avatar.png') }}'">
+            </div>
+            <div>
+              <label class="form-label" for="profileAvatar">Upload Profile Picture (Saved to Local Server)</label>
+              <input type="file" id="profileAvatar" name="avatar" class="form-control" accept="image/*" data-preview-target="avatarPreviewImg">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Accepted formats: JPG, PNG, WEBP (Max 16MB)</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+              <label class="form-label" for="profFullName">Full Name *</label>
+              <input type="text" id="profFullName" name="full_name" class="form-control" value="{{ profile.full_name }}" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profEmail">Email (Read Only)</label>
+              <input type="email" id="profEmail" class="form-control" value="{{ current_user.email }}" readonly style="opacity: 0.7;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
+            <div class="form-group">
+              <label class="form-label" for="profPhone">Mobile Phone</label>
+              <input type="text" id="profPhone" name="phone" class="form-control" value="{{ current_user.phone or '' }}" placeholder="+91 98765 43210">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profAge">Age</label>
+              <input type="number" id="profAge" name="age" class="form-control" value="{{ profile.age or '' }}" placeholder="e.g. 25">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profGender">Gender</label>
+              <select id="profGender" name="gender" class="form-control">
+                <option value="Male" {% if profile.gender == 'Male' %}selected{% endif %}>Male</option>
+                <option value="Female" {% if profile.gender == 'Female' %}selected{% endif %}>Female</option>
+                <option value="Other" {% if profile.gender == 'Other' %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+              <label class="form-label" for="profHeight">Height (cm)</label>
+              <input type="number" step="0.1" id="profHeight" name="height_cm" class="form-control" value="{{ profile.height_cm or '' }}" placeholder="175">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profWeight">Weight (kg)</label>
+              <input type="number" step="0.1" id="profWeight" name="weight_kg" class="form-control" value="{{ profile.weight_kg or '' }}" placeholder="72.5">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profBlood">Blood Group</label>
+              <input type="text" id="profBlood" name="blood_group" class="form-control" value="{{ profile.blood_group or '' }}" placeholder="O+ / B+">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="profGoal">Primary Fitness Goal</label>
+            <input type="text" id="profGoal" name="fitness_goal" class="form-control" value="{{ profile.fitness_goal or '' }}" placeholder="e.g. Pure Strength & Hypertrophy">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="profAddress">Address / City</label>
+            <textarea id="profAddress" name="address" rows="2" class="form-control" placeholder="Your residential address">{{ profile.address or '' }}</textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="profEmergency">Emergency Contact Number</label>
+            <input type="text" id="profEmergency" name="emergency_contact" class="form-control" value="{{ profile.emergency_contact or '' }}" placeholder="+91 98450 XXXXX">
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+            Save Profile Changes to SQL Database
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 3: CHOOSE / CHANGE TRAINER -->
+    <div class="tab-content" id="trainer">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Customized <span class="neon-text">Personal Trainers</span></h1>
+          <p class="dash-subtitle">Select your dedicated coach. Switch your mentor anytime with 1 click.</p>
+        </div>
+      </div>
+
+      <div class="trainers-grid">
+        {% for tr in all_trainers %}
+          <div class="trainer-card" style="border: {% if active_membership and active_membership.trainer_id == tr.id %}2px solid var(--neon-green){% else %}1px solid var(--border-subtle){% endif %};">
+            <div class="trainer-img-wrapper" style="height: 280px;">
+              <img src="{{ url_for('serve_media', filename=tr.photo) }}" alt="{{ tr.name }}" onerror="this.src='{{ url_for('static', filename='images/default_avatar.png') }}'">
+              <div class="trainer-badge">Rating: {{ tr.rating }} / 5.0</div>
+            </div>
+            <div class="trainer-info">
+              <h3 class="trainer-name">{{ tr.name }}</h3>
+              <div class="trainer-spec">{{ tr.specialty }}</div>
+              <p class="trainer-bio">{{ tr.bio }}</p>
+              
+              <div class="trainer-footer">
+                <span class="trainer-exp">Experience: {{ tr.experience_years }}+ yrs</span>
+                {% if active_membership and active_membership.trainer_id == tr.id %}
+                  <span class="status-pill status-approved">Currently Assigned Coach</span>
+                {% else %}
+                  <form action="{{ url_for('select_trainer', trainer_id=tr.id) }}" method="POST">
+                    <button type="submit" class="btn btn-primary btn-sm">Select Coach</button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- TAB 4: SCAN & PAY / PAYMENT HISTORY -->
+    <div class="tab-content" id="payments">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Online UPI & <span class="neon-text">Offline Payment Portal</span></h1>
+          <p class="dash-subtitle">Use Google Pay / PhonePe / Paytm with our auto-amount QR, or generate an offline counter voucher.</p>
+        </div>
+      </div>
+
+      <!-- Payment Interface Card -->
+      <div class="payment-showcase" style="margin-bottom: 40px;">
+        <div>
+          <span class="section-badge">Indian Payment Methods</span>
+          <h2 style="font-size: 1.8rem; margin-bottom: 12px;">Pay Your Gym Membership Fee</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.95rem;">
+            Option 1: Scan the dynamic UPI QR code or send to <strong>gopinath71845@oksbi</strong>.<br>
+            Option 2: Select "Offline Front Desk" to generate a cash voucher slip.
+          </p>
+
+          <div style="background: rgba(0, 255, 102, 0.05); border: 1px solid var(--border-neon); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Official UPI Merchant ID</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px;">
+              <span style="font-family: monospace; font-size: 1.2rem; font-weight: 800; color: var(--neon-green);">gopinath71845@oksbi</span>
+              <button class="btn btn-outline btn-sm btn-copy-upi" data-upi="gopinath71845@oksbi">Copy UPI ID</button>
+            </div>
+          </div>
+
+          <!-- Submit Payment Form -->
+          <form action="{{ url_for('submit_payment') }}" method="POST" enctype="multipart/form-data" style="background: #0d120f; border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px;">
+            <h4 style="font-size: 1.1rem; margin-bottom: 14px; color: var(--neon-green);">Select Payment Plan & Method</h4>
+            
+            <div class="form-group">
+              <label class="form-label">Payment Channel *</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px;">
+                <label style="background: rgba(0, 255, 102, 0.08); border: 1px solid var(--border-neon); border-radius: 8px; padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                  <input type="radio" name="payment_method" value="UPI_QR" checked id="dashPayUpi" onchange="toggleDashPay('UPI_QR')">
+                  <span style="font-weight: 700; color: #fff; font-size: 0.9rem;">Online UPI QR</span>
+                </label>
+                <label style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                  <input type="radio" name="payment_method" value="Offline_Cash" id="dashPayCash" onchange="toggleDashPay('Offline_Cash')">
+                  <span style="font-weight: 700; color: #fff; font-size: 0.9rem;">Front Desk Cash</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="payPlanSelect">Choose Membership Plan / Advance Fee *</label>
+              <select id="payPlanSelect" name="plan_id" class="form-control" required>
+                {% for plan in all_plans %}
+                  <option value="{{ plan.id }}" data-price="{{ plan.price }}" data-name="{{ plan.name }}" {% if active_plan and active_plan.id == plan.id %}selected{% endif %}>
+                    {{ plan.name }} - ₹{{ "{:,.0f}".format(plan.price) }} ({{ plan.duration_months }} Months)
+                  </option>
+                {% endfor %}
+                <option value="0" data-price="1000" data-name="Custom Advance Payment">
+                  Custom Advance / Partial Payment
+                </option>
+              </select>
+            </div>
+
+            <!-- Custom Advance Amount Input (shown if selected) -->
+            <div class="form-group" id="customAdvanceGroup" style="display: none;">
+              <label class="form-label" for="customAdvanceInput">Enter Advance Amount (in ₹ INR) *</label>
+              <input type="number" id="customAdvanceInput" name="custom_amount" class="form-control" placeholder="e.g. 1000" min="100" max="100000" value="1000">
+              <span style="font-size: 0.8rem; color: var(--neon-green);">QR code updates automatically as you type!</span>
+            </div>
+
+            <!-- Online UPI Form Group -->
+            <div id="dashUpiGroup">
+              <div class="form-group">
+                <label class="form-label" for="payUtr">UPI Transaction ID / UTR Number (12 Digits) *</label>
+                <input type="text" id="payUtr" name="utr_number" class="form-control" placeholder="e.g. 429038291048">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="payReceipt">Upload Screenshot / Receipt (Optional)</label>
+                <input type="file" id="payReceipt" name="receipt_image" class="form-control" accept="image/*">
+              </div>
+            </div>
+
+            <!-- Offline Cash Notice -->
+            <div id="dashOfflineGroup" style="display: none; background: rgba(255, 170, 0, 0.08); border: 1px solid rgba(255, 170, 0, 0.3); border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+                Generating a cash voucher logs your request in the SQL database. Show your Voucher ID at the gym counter to complete payment.
+              </p>
+            </div>
+
+            <button type="submit" id="dashSubmitPayBtn" class="btn btn-primary" style="width: 100%;">
+              Submit Payment Proof for Verification
+            </button>
+          </form>
+        </div>
+
+        <!-- Dynamic QR Display with Pre-Programmed Amount -->
+        <div class="qr-box-card" id="dashQrBox">
+          <div style="display: inline-block; background: var(--neon-green-dim); border: 1px solid var(--border-neon); border-radius: 20px; padding: 4px 14px; font-size: 0.78rem; font-weight: 700; color: var(--neon-green); margin-bottom: 10px;">
+            Dynamic Auto-Pay QR Code
+          </div>
+          <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 4px;">Scan & Auto-Pay</h3>
+          <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 12px;">Amount is already embedded inside the QR code.</p>
+          
+          <!-- Dynamic QR image generated on server -->
+          {% set init_price = active_plan.price if active_plan else (all_plans[0].price if all_plans else 999) %}
+          {% set init_name = active_plan.name if active_plan else (all_plans[0].name if all_plans else 'Membership') %}
+          <div style="background: #fff; padding: 12px; border-radius: 12px; display: inline-block;">
+            <img id="dashboardDynamicQr" src="{{ url_for('dynamic_upi_qr', amount=init_price, plan=init_name) }}" alt="The Power Gym UPI QR" class="qr-image-display" style="width: 220px; height: 220px; display: block;">
+          </div>
+          
+          <div id="dashboardQrBadge" style="background: rgba(0, 255, 102, 0.12); border: 1px solid var(--neon-green); border-radius: 8px; padding: 8px 12px; margin: 10px 0; font-size: 0.95rem; color: #00FF66; font-weight: 800;">
+            Auto-Amount: ₹<span id="dashboardQrAmountDisplay">{{ "{:,.0f}".format(init_price) }}</span>
+          </div>
+
+          <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+            No manual amount entry needed in UPI apps.
+          </div>
+
+          <div style="margin-top: 10px;">
+            <a id="dashboardDirectUpiLink" href="upi://pay?pa=gopinath71845@oksbi&pn=The%20Power%20Gym&am={{ init_price }}&cu=INR&tn=The%20Power%20Gym%20{{ init_name }}" class="btn btn-outline btn-sm">
+              Open UPI App (₹<span id="upiBtnAmount">{{ "{:,.0f}".format(init_price) }}</span>)
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment History Table -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h3 class="dash-card-title">Payment History & Verification Status</h3>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>Receipt ID</th>
+                <th>Date</th>
+                <th>Plan Name</th>
+                <th>Amount (₹)</th>
+                <th>Channel</th>
+                <th>UTR / Voucher</th>
+                <th>Status</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if payments %}
+                {% for p in payments %}
+                  <tr>
+                    <td>#PAY-{{ p.id }}</td>
+                    <td>{{ p.created_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                    <td>{{ p.plan.name if p.plan else 'Membership Plan' }}</td>
+                    <td><strong>₹{{ "{:,.0f}".format(p.amount) }}</strong></td>
+                    <td>{{ 'Offline Cash' if p.payment_method == 'Offline_Cash' else 'Online UPI' }}</td>
+                    <td><code style="color: var(--neon-green);">{{ p.utr_number or 'N/A' }}</code></td>
+                    <td>
+                      {% if p.status == 'Approved' %}
+                        <span class="status-pill status-approved">Approved</span>
+                      {% elif p.status == 'Pending' %}
+                        <span class="status-pill status-pending">Pending Verification</span>
+                      {% else %}
+                        <span class="status-pill status-rejected">Rejected</span>
+                      {% endif %}
+                    </td>
+                    <td style="color: var(--text-secondary); font-size: 0.85rem;">{{ p.notes or '-' }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                    No payment records found yet. Scan the QR code above or select offline cash to begin.
+                  </td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: WORKOUT SCHEDULE -->
+    <div class="tab-content" id="workout">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Recommended <span class="neon-text">Training Split</span></h1>
+          <p class="dash-subtitle">High-frequency Push-Pull-Legs protocol designed for progressive strength overload.</p>
+        </div>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="sidebar-badge badge-customer" style="margin-bottom: 12px;">Day 1: Monday</span>
+          <h3 class="feature-title">Push (Chest, Shoulders & Triceps)</h3>
+          <ul style="color: var(--text-secondary); font-size: 0.92rem; padding-left: 18px; line-height: 1.8;">
+            <li>Barbell Bench Press: 4 sets x 6-8 reps</li>
+            <li>Incline Dumbbell Press: 3 sets x 8-10 reps</li>
+            <li>Overhead Dumbbell Shoulder Press: 4 sets x 8-12 reps</li>
+            <li>Lateral Raises: 4 sets x 15 reps</li>
+            <li>Cable Tricep Pushdowns: 3 sets x 12 reps</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <span class="sidebar-badge badge-customer" style="margin-bottom: 12px;">Day 2: Tuesday</span>
+          <h3 class="feature-title">Pull (Back, Lats & Biceps)</h3>
+          <ul style="color: var(--text-secondary); font-size: 0.92rem; padding-left: 18px; line-height: 1.8;">
+            <li>Conventional Deadlift: 3 sets x 5 reps</li>
+            <li>Lat Pulldowns (Wide Grip): 4 sets x 10 reps</li>
+            <li>Barbell Bent-Over Row: 4 sets x 8 reps</li>
+            <li>Facepulls for Rear Delts: 4 sets x 15 reps</li>
+            <li>Incline Dumbbell Bicep Curls: 3 sets x 10 reps</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <span class="sidebar-badge badge-customer" style="margin-bottom: 12px;">Day 3: Wednesday</span>
+          <h3 class="feature-title">Legs & Core Power</h3>
+          <ul style="color: var(--text-secondary); font-size: 0.92rem; padding-left: 18px; line-height: 1.8;">
+            <li>Barbell Back Squats: 4 sets x 6 reps</li>
+            <li>Romanian Deadlifts: 3 sets x 8-10 reps</li>
+            <li>Leg Press (Heavy): 4 sets x 12 reps</li>
+            <li>Standing Calf Raises: 4 sets x 15 reps</li>
+            <li>Hanging Leg Raises: 3 sets to failure</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function toggleDashPay(method) {
+  const upiGroup = document.getElementById('dashUpiGroup');
+  const offlineGroup = document.getElementById('dashOfflineGroup');
+  const submitBtn = document.getElementById('dashSubmitPayBtn');
+  const utrInput = document.getElementById('payUtr');
+  const qrBox = document.getElementById('dashQrBox');
+
+  if (method === 'Offline_Cash') {
+    upiGroup.style.display = 'none';
+    offlineGroup.style.display = 'block';
+    utrInput.removeAttribute('required');
+    submitBtn.textContent = 'Generate Offline Cash Voucher';
+    qrBox.style.opacity = '0.4';
+  } else {
+    upiGroup.style.display = 'block';
+    offlineGroup.style.display = 'none';
+    utrInput.setAttribute('required', 'required');
+    submitBtn.textContent = 'Submit Payment Proof for Verification';
+    qrBox.style.opacity = '1';
+  }
+}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

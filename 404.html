@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Page Not Found | The Power Gym</title>
+  <link rel="icon" type="image/svg+xml" href="static/images/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
+  
+  <script>
+    // Smart Single Page App / Static Hosting 404 Auto-Redirect
+    (function() {
+      var path = window.location.pathname.toLowerCase();
+      var search = window.location.search || '';
+      var hash = window.location.hash || '';
+
+      // Clean trailing slashes
+      if (path.endsWith('/') && path.length > 1) {
+        path = path.slice(0, -1);
+      }
+
+      // Check if user was navigating to a clean URL without .html
+      if (path.endsWith('/register')) {
+        window.location.replace('register.html' + search + hash);
+      } else if (path.endsWith('/login')) {
+        window.location.replace('login.html' + search + hash);
+      } else if (path.endsWith('/dashboard') || path.endsWith('/customer_dashboard')) {
+        window.location.replace('dashboard.html' + search + hash);
+      } else if (path.endsWith('/payment') || path.includes('/checkout')) {
+        window.location.replace('payment.html' + search + hash);
+      } else if (path.endsWith('/staff/login') || path.endsWith('/staff-login')) {
+        window.location.replace('staff-login.html' + search + hash);
+      } else if (path.endsWith('/staff/register') || path.endsWith('/staff-register')) {
+        window.location.replace('staff-register.html' + search + hash);
+      } else if (path.endsWith('/staff/dashboard') || path.endsWith('/staff-dashboard') || path.endsWith('/staff')) {
+        window.location.replace('staff-dashboard.html' + search + hash);
+      }
+    })();
+  </script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #080B09;
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: #131916;
+      border: 1px solid rgba(0, 255, 102, 0.35);
+      box-shadow: 0 0 35px rgba(0, 255, 102, 0.2);
+      border-radius: 20px;
+      padding: 50px 30px;
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+    }
+    .code {
+      font-size: 5.5rem;
+      font-weight: 900;
+      color: #00FF66;
+      font-family: 'Outfit', sans-serif;
+      text-shadow: 0 0 20px rgba(0, 255, 102, 0.5);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 14px;
+    }
+    p {
+      color: #9CA3AF;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      background: #00FF66;
+      color: #000;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      padding: 12px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(0, 255, 102, 0.6);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #00FF66;
+      color: #00FF66;
+      box-shadow: none;
+    }
+    .btn-outline:hover {
+      background: rgba(0, 255, 102, 0.1);
+      color: #00FF66;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="code">404</div>
+    <h1>Lost Your Way in The Gym?</h1>
+    <p>The requested page was not found or has moved. Head back to the main portal to access your fitness routine and payments.</p>
+    <div class="btn-group">
+      <a href="index.html" class="btn">Return Home</a>
+      <a href="register.html" class="btn btn-outline">Join Membership</a>
+      <a href="login.html" class="btn btn-outline">Member Login</a>
+    </div>
+  </div>
+</body>
+</html>

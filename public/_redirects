@@ -1,0 +1,9 @@
+/register          /register.html          200
+/login             /login.html             200
+/dashboard         /dashboard.html         200
+/payment           /payment.html           200
+/checkout/*        /payment.html           200
+/staff/login       /staff-login.html       200
+/staff/register    /staff-register.html    200
+/staff/dashboard   /staff-dashboard.html   200
+/staff             /staff-login.html       200

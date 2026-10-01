@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout & Payment | The Power Gym{% endblock %}
+
+{% block content %}
+<section class="section" style="min-height: calc(100vh - 160px); display: flex; align-items: center;">
+  <div class="container" style="max-width: 940px;">
+    
+    <div style="text-align: center; margin-bottom: 30px;">
+      <span class="section-badge">Payment Gateway</span>
+      <h1 class="section-title">Complete Your <span class="neon-text">Membership Checkout</span></h1>
+      <p class="section-desc">Choose between instant online UPI scan or offline front desk payment.</p>
+    </div>
+
+    <div class="payment-showcase">
+      
+      <!-- Payment Details & Form -->
+      <div>
+        <div style="background: rgba(0, 255, 102, 0.08); border: 1px solid var(--border-neon); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+          <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase;">Selected Plan:</div>
+          <h3 style="font-size: 1.5rem; margin: 4px 0; color: #fff;">{{ plan.name }}</h3>
+          <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 8px;">
+            <span style="font-size: 1.15rem; color: var(--neon-green); font-weight: 700;">Total Payable:</span>
+            <span style="font-size: 2.2rem; font-weight: 900; color: var(--neon-green); font-family: var(--font-heading);">₹{{ "{:,.0f}".format(plan.price) }}</span>
+            <span style="color: var(--text-muted); font-size: 0.9rem;">({{ plan.duration_months }} Months Plan)</span>
+          </div>
+        </div>
+
+        <form action="{{ url_for('submit_payment') }}" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="plan_id" value="{{ plan.id }}">
+          
+          <!-- Payment Method Selection -->
+          <div class="form-group">
+            <label class="form-label">Select Payment Method *</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px;">
+              <label style="background: rgba(0, 255, 102, 0.08); border: 1px solid var(--border-neon); border-radius: 10px; padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                <input type="radio" name="payment_method" value="UPI_QR" checked id="payMethodUpi" onchange="togglePayMethod('UPI_QR')">
+                <span style="font-weight: 700; color: #fff; font-size: 0.92rem;">Online UPI QR</span>
+              </label>
+              <label style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                <input type="radio" name="payment_method" value="Offline_Cash" id="payMethodCash" onchange="togglePayMethod('Offline_Cash')">
+                <span style="font-weight: 700; color: #fff; font-size: 0.92rem;">Offline Front Desk</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- UPI Fields (Shown by default) -->
+          <div id="upiFormSection">
+            <div class="form-group">
+              <label class="form-label" for="checkoutUtr">Bank UTR / UPI Transaction Reference Number *</label>
+              <input type="text" id="checkoutUtr" name="utr_number" class="form-control" placeholder="12-digit UPI reference number (e.g. 429038291048)">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="checkoutReceipt">Upload Payment Screenshot / Receipt (Optional)</label>
+              <input type="file" id="checkoutReceipt" name="receipt_image" class="form-control" accept="image/*">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Saved securely on the local server for staff verification.</span>
+            </div>
+          </div>
+
+          <!-- Offline Cash Notice (Hidden by default) -->
+          <div id="offlineFormSection" style="display: none; background: rgba(255, 170, 0, 0.08); border: 1px solid rgba(255, 170, 0, 0.3); border-radius: 10px; padding: 16px; margin-bottom: 18px;">
+            <div style="color: #FFAA00; font-weight: 700; margin-bottom: 4px;">Offline Payment Instructions</div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+              Clicking below will generate an official cash voucher in your member account. Please visit The Power Gym reception desk, show your voucher, and pay cash for immediate activation.
+            </p>
+          </div>
+
+          <button type="submit" id="submitPayBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 10px;">
+            Submit Payment Proof for Verification
+          </button>
+        </form>
+
+        <div style="margin-top: 20px; font-size: 0.82rem; color: var(--text-muted);">
+          All transactions are logged to the SQL database with audit timestamps.
+        </div>
+      </div>
+
+      <!-- QR Code Display Box -->
+      <div class="qr-box-card" id="qrDisplayBox">
+        <div style="display: inline-block; background: var(--neon-green-dim); border: 1px solid var(--border-neon); border-radius: 20px; padding: 4px 14px; font-size: 0.75rem; font-weight: 700; color: var(--neon-green); margin-bottom: 10px; text-transform: uppercase;">
+          Pre-Configured Plan Amount
+        </div>
+        <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 4px;">Dynamic UPI QR</h3>
+        <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 12px;">Auto-coded for ₹{{ "{:,.0f}".format(plan.price) }} (No manual typing required)</p>
+        
+        <div style="background: #fff; padding: 12px; border-radius: 12px; display: inline-block; margin-bottom: 12px;">
+          <img src="{{ url_for('dynamic_upi_qr', amount=plan.price, plan=plan.name) }}" alt="The Power Gym Dynamic UPI QR" class="qr-image-display" style="width: 220px; height: 220px; display: block;">
+        </div>
+        
+        <div style="margin-bottom: 14px;">
+          <span class="upi-id-pill btn-copy-upi" data-upi="gopinath71845@oksbi" style="font-size: 0.95rem;">
+            gopinath71845@oksbi [Copy UPI ID]
+          </span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <a href="upi://pay?pa=gopinath71845@oksbi&pn=The%20Power%20Gym&am={{ plan.price }}&cu=INR&tn=The%20Power%20Gym%20{{ plan.name }}" class="btn btn-outline btn-sm">
+            Open in UPI App (₹{{ "{:,.0f}".format(plan.price) }})
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+function togglePayMethod(method) {
+  const upiSec = document.getElementById('upiFormSection');
+  const offlineSec = document.getElementById('offlineFormSection');
+  const submitBtn = document.getElementById('submitPayBtn');
+  const utrInput = document.getElementById('checkoutUtr');
+  const qrBox = document.getElementById('qrDisplayBox');
+
+  if (method === 'Offline_Cash') {
+    upiSec.style.display = 'none';
+    offlineSec.style.display = 'block';
+    utrInput.removeAttribute('required');
+    submitBtn.textContent = 'Generate Offline Cash Voucher';
+    qrBox.style.opacity = '0.4';
+  } else {
+    upiSec.style.display = 'block';
+    offlineSec.style.display = 'none';
+    utrInput.setAttribute('required', 'required');
+    submitBtn.textContent = 'Submit Payment Proof for Verification';
+    qrBox.style.opacity = '1';
+  }
+}
+</script>
+{% endblock %}

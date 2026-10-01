@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Page Not Found | The Power Gym{% endblock %}
+
+{% block content %}
+<section class="section" style="min-height: calc(100vh - 160px); display: flex; align-items: center; text-align: center;">
+  <div class="container" style="max-width: 600px;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border-neon); border-radius: var(--radius-lg); padding: 50px 30px; box-shadow: var(--shadow-neon);">
+      <div style="font-size: 6rem; font-weight: 900; color: var(--neon-green); font-family: var(--font-heading); line-height: 1; text-shadow: 0 0 25px var(--neon-green-glow); margin-bottom: 14px;">
+        404
+      </div>
+      <h1 style="font-size: 2rem; margin-bottom: 14px;">Page Not Found</h1>
+      <p style="color: var(--text-secondary); margin-bottom: 30px; line-height: 1.6;">
+        The page you are looking for has been moved or does not exist. Use the links below to return to the official Power Gym portals.
+      </p>
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Back to Home</a>
+        <a href="{{ url_for('login_customer') }}" class="btn btn-outline">Member Login</a>
+        <a href="{{ url_for('login_staff') }}" class="btn btn-secondary" style="color: #FFAA00;">Staff Portal</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

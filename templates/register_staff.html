@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Staff Registration | The Power Gym{% endblock %}
+
+{% block content %}
+<section class="section" style="min-height: calc(100vh - 160px); display: flex; align-items: center;">
+  <div class="container" style="max-width: 520px;">
+    <div style="background: var(--bg-card); border: 1px solid rgba(255, 170, 0, 0.45); border-radius: var(--radius-lg); padding: 40px 34px; box-shadow: 0 0 35px rgba(255, 170, 0, 0.12);">
+      
+      <div style="text-align: center; margin-bottom: 26px;">
+        <span class="sidebar-badge badge-staff" style="font-size: 0.8rem; padding: 6px 16px; letter-spacing: 0.1em;">
+          Official Staff & Trainer Registration
+        </span>
+        <h1 style="font-size: 2.1rem; margin-top: 12px; color: #FFF;">Create <span style="color: #FFAA00;">Staff Account</span></h1>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">
+          Gym employee and trainer accounts require the server authorization key.
+        </p>
+      </div>
+
+      <form action="{{ url_for('register_staff') }}" method="POST" autocomplete="on">
+        
+        <!-- Full Name -->
+        <div class="form-group">
+          <label class="form-label" for="staffFullName">Full Legal Name *</label>
+          <input 
+            type="text" 
+            id="staffFullName" 
+            name="full_name" 
+            class="form-control" 
+            placeholder="e.g. Ramesh Kumar" 
+            required 
+            autofocus
+          >
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <!-- Username -->
+          <div class="form-group">
+            <label class="form-label" for="staffRegUser">Staff Username *</label>
+            <input 
+              type="text" 
+              id="staffRegUser" 
+              name="username" 
+              class="form-control" 
+              placeholder="e.g. coach_ramesh" 
+              required
+            >
+          </div>
+
+          <!-- Phone -->
+          <div class="form-group">
+            <label class="form-label" for="staffPhone">Mobile Number</label>
+            <input 
+              type="tel" 
+              id="staffPhone" 
+              name="phone" 
+              class="form-control" 
+              placeholder="+91 98765 00000"
+            >
+          </div>
+        </div>
+
+        <!-- Official Email -->
+        <div class="form-group">
+          <label class="form-label" for="staffRegEmail">Staff Official Email *</label>
+          <input 
+            type="email" 
+            id="staffRegEmail" 
+            name="email" 
+            class="form-control" 
+            placeholder="e.g. ramesh@thepowergym.in" 
+            required
+          >
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label" for="staffRegPassword">Create Password (Min 6 Characters) *</label>
+          <div class="input-password-wrapper">
+            <input 
+              type="password" 
+              id="staffRegPassword" 
+              name="password" 
+              class="form-control" 
+              placeholder="Enter strong staff password" 
+              minlength="6"
+              required
+            >
+            <button type="button" class="btn-toggle-eye" data-target="staffRegPassword" title="Toggle visibility" aria-label="Toggle password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label class="form-label" for="staffRegConfirmPassword">Confirm Password *</label>
+          <div class="input-password-wrapper">
+            <input 
+              type="password" 
+              id="staffRegConfirmPassword" 
+              name="confirm_password" 
+              class="form-control" 
+              placeholder="Re-type password to verify" 
+              minlength="6"
+              required
+            >
+            <button type="button" class="btn-toggle-eye" data-target="staffRegConfirmPassword" title="Toggle visibility" aria-label="Toggle confirm password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Staff Master Authorization Key -->
+        <div class="staff-key-card" style="border-color: rgba(255, 170, 0, 0.45); background: rgba(255, 170, 0, 0.04); margin-bottom: 20px;">
+          <div class="staff-key-header">
+            <span style="color: #FFAA00; font-weight: 700;">Server Security Key *</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px;">
+            Enter gym server master access key (viewable only on server)
+          </p>
+          <div class="input-password-wrapper">
+            <input 
+              type="password" 
+              id="staffKeyReg" 
+              name="staff_key" 
+              class="form-control" 
+              placeholder="Enter Server Security Key" 
+              autocomplete="off" 
+              required
+              style="border-color: rgba(255, 170, 0, 0.4); font-family: monospace; letter-spacing: 1px;"
+            >
+            <button type="button" class="btn-toggle-eye" data-target="staffKeyReg" title="Toggle visibility" aria-label="Toggle key visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; background: #FFAA00; color: #000; border-color: #FFAA00; box-shadow: 0 0 20px rgba(255, 170, 0, 0.35); font-weight: 800;">
+          Register Staff Account
+        </button>
+
+        <div style="margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem;">
+          <a href="{{ url_for('login_staff') }}" style="color: #FFAA00;">Already registered? Staff Login</a>
+          <a href="{{ url_for('register_customer') }}" class="neon-text">Member Join</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

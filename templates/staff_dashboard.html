@@ -1,0 +1,953 @@
+{% extends "base.html" %}
+
+{% block title %}Staff & Admin Console | The Power Gym{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-profile">
+      <div class="profile-avatar-wrapper" style="border-color: #FFAA00; box-shadow: 0 0 15px rgba(255, 170, 0, 0.4);">
+        <img src="{{ url_for('serve_media', filename=(profile.avatar if profile and profile.avatar else 'trainer_vikram.jpg')) }}" alt="Staff Avatar" onerror="this.src='{{ url_for('static', filename='images/default_avatar.png') }}'">
+      </div>
+      <h3 class="sidebar-username">{{ profile.full_name if profile else 'Chief Gym Manager' }}</h3>
+      <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">@{{ current_user.username }}</div>
+      <span class="sidebar-badge badge-staff">Staff Administrator</span>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li>
+        <button class="sidebar-link active" data-tab="staff-overview">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"></path></svg>
+          Overview & Metrics
+        </button>
+      </li>
+      <li>
+        <button class="sidebar-link" data-tab="staff-members">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Manage Members ({{ members|length }})
+        </button>
+      </li>
+      <li>
+        <button class="sidebar-link" data-tab="staff-payments">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+          Verify Payments ({{ pending_payments_count }})
+        </button>
+      </li>
+      <li>
+        <button class="sidebar-link" data-tab="staff-trainers">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+          Manage Trainers ({{ trainers|length }})
+        </button>
+      </li>
+      <li>
+        <button class="sidebar-link" data-tab="staff-plans">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          Membership Plans ({{ all_plans|length }})
+        </button>
+      </li>
+      <li>
+        <button class="sidebar-link" data-tab="staff-inquiries">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          Inquiries ({{ inquiries|length }})
+        </button>
+      </li>
+    </ul>
+
+    <div style="padding-top: 20px; border-top: 1px solid var(--border-subtle); margin-top: auto;">
+      <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm" style="width: 100%; color: #ff6666;">
+        Log Out
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="dashboard-content">
+
+    <!-- TAB 1: OVERVIEW & STATS -->
+    <div class="tab-content active" id="staff-overview">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Staff Administration <span style="color: #FFAA00;">Console</span></h1>
+          <p class="dash-subtitle">Real-time statistics from SQL database: memberships, revenue, and management controls.</p>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">Total Registered Members</div>
+          <div class="stat-value">{{ members|length }}</div>
+          <div class="stat-desc">Stored in SQL Server</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-title">Pending Payment Approvals</div>
+          <div class="stat-value" style="color: #FFAA00;">{{ pending_payments_count }}</div>
+          <div class="stat-desc">Requires UTR verification</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-title">Total Approved Revenue</div>
+          <div class="stat-value" style="color: var(--neon-green);">₹{{ "{:,.0f}".format(total_revenue) }}</div>
+          <div class="stat-desc">UPI Account: gopinath71845@oksbi</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-title">Active Trainers</div>
+          <div class="stat-value">{{ trainers|length }}</div>
+          <div class="stat-desc">Certified Gym Coaches</div>
+        </div>
+      </div>
+
+      <!-- Quick Action Panels -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">Manage Member Names & Accounts</h3>
+          </div>
+          <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.92rem;">
+            Edit legal names, assigned workout plans, assigned coaches, and mobile numbers for any member.
+          </p>
+          <button class="btn btn-primary btn-sm" onclick="document.querySelector('[data-tab=staff-members]').click();">
+            Open Member Management &rarr;
+          </button>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">Manage Plans & Pricing</h3>
+          </div>
+          <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.92rem;">
+            Adjust membership fees in INR (₹), update features, or add new workout tier packages.
+          </p>
+          <button class="btn btn-outline btn-sm" onclick="document.querySelector('[data-tab=staff-plans]').click();">
+            Edit Membership Plans &rarr;
+          </button>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">Customize Trainers & Photos</h3>
+          </div>
+          <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.92rem;">
+            Upload updated coach photos to local server and modify bios, ratings, and monthly fees.
+          </p>
+          <button class="btn btn-outline btn-sm" onclick="document.querySelector('[data-tab=staff-trainers]').click();">
+            Customize Trainers &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: MANAGE MEMBERS (EDIT LEGAL NAME, PLAN, TRAINER) -->
+    <div class="tab-content" id="staff-members">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Gym <span class="neon-text">Members Directory</span></h1>
+          <p class="dash-subtitle">Staff-exclusive permission to edit member names, assigned plans, coaches, and account statuses.</p>
+        </div>
+        <div style="width: 320px;">
+          <input type="text" id="memberSearchInput" class="form-control" placeholder="Search member name, email or phone...">
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="table-responsive">
+          <table class="table-custom" id="membersTable">
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Username</th>
+                <th>Phone</th>
+                <th>Current Plan</th>
+                <th>Assigned Coach</th>
+                <th>Validity End</th>
+                <th>Status</th>
+                <th>Staff Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for m in members %}
+                {% set active_mship = m.get_active_membership() %}
+                <tr>
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                      <img src="{{ url_for('serve_media', filename=(m.profile.avatar if m.profile and m.profile.avatar else 'default_avatar.png')) }}" alt="{{ m.username }}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);" onerror="this.src='{{ url_for('static', filename='images/default_avatar.png') }}'">
+                      <div>
+                        <strong style="color: #fff;">{{ m.profile.full_name if m.profile else m.username }}</strong>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">{{ m.email }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>@{{ m.username }}</td>
+                  <td>{{ m.phone or 'N/A' }}</td>
+                  <td>
+                    {% if active_mship and active_mship.plan %}
+                      <span style="color: var(--neon-green); font-weight: 600;">{{ active_mship.plan.name }}</span>
+                    {% else %}
+                      <span style="color: var(--text-muted);">No Active Plan</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if active_mship and active_mship.trainer %}
+                      {{ active_mship.trainer.name }}
+                    {% else %}
+                      <span style="color: var(--text-muted);">None</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if active_mship %}
+                      {{ active_mship.end_date.strftime('%d %b %Y') }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if m.is_active %}
+                      <span class="status-pill status-approved">Active</span>
+                    {% else %}
+                      <span class="status-pill status-rejected">Suspended</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                      <button 
+                        type="button" 
+                        class="btn btn-outline btn-sm btn-open-edit-member"
+                        data-member-id="{{ m.id }}"
+                        data-member-name="{{ m.profile.full_name if m.profile else m.username }}"
+                        data-member-phone="{{ m.phone or '' }}"
+                        data-member-goal="{{ m.profile.fitness_goal if m.profile else '' }}"
+                        data-member-plan="{{ active_mship.plan_id if active_mship else '' }}"
+                        data-member-trainer="{{ active_mship.trainer_id if active_mship else '' }}"
+                        style="padding: 4px 10px; font-size: 0.8rem; border-color: #FFAA00; color: #FFAA00;"
+                      >
+                        Edit Member
+                      </button>
+                      <form action="{{ url_for('toggle_member_status', user_id=m.id) }}" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.8rem;">
+                          {% if m.is_active %}Suspend{% else %}Activate{% endif %}
+                        </button>
+                      </form>
+                      <form action="{{ url_for('delete_member', user_id=m.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to permanently remove member {{ m.profile.full_name if m.profile else m.username }} (#TPG-{{ m.id }})?');">
+                        <button type="submit" class="btn btn-sm" style="padding: 4px 10px; font-size: 0.8rem; background: rgba(255, 82, 82, 0.15); border: 1px solid #FF5252; color: #FF5252; cursor: pointer; border-radius: 6px;">
+                          Remove Member
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: VERIFY PAYMENTS & RECORD CASH -->
+    <div class="tab-content" id="staff-payments">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Verify & Approve <span class="neon-text">Payments</span></h1>
+          <p class="dash-subtitle">Review online UPI transfers (gopinath71845@oksbi) and record front desk cash receipts.</p>
+        </div>
+      </div>
+
+      <!-- Record Cash Payment at Front Desk Form -->
+      <div class="dash-card" style="margin-bottom: 30px; border-color: rgba(255, 170, 0, 0.4);">
+        <div class="dash-card-header">
+          <h3 class="dash-card-title" style="color: #FFAA00;">Record In-Person Front Desk Cash Payment</h3>
+        </div>
+        <form action="{{ url_for('record_cash_payment') }}" method="POST" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto; gap: 16px; align-items: flex-end;">
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label" for="cashMember">Select Member *</label>
+            <select id="cashMember" name="member_id" class="form-control" required>
+              <option value="">-- Choose Member --</option>
+              {% for m in members %}
+                <option value="{{ m.id }}">{{ m.profile.full_name if m.profile else m.username }} (@{{ m.username }})</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label" for="cashPlan">Select Plan *</label>
+            <select id="cashPlan" name="plan_id" class="form-control" required>
+              {% for p in all_plans %}
+                <option value="{{ p.id }}">{{ p.name }} - ₹{{ "{:,.0f}".format(p.price) }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label" for="cashAmount">Amount Collected (₹)</label>
+            <input type="number" id="cashAmount" name="amount" class="form-control" placeholder="Optional Custom Amount">
+          </div>
+
+          <div>
+            <button type="submit" class="btn btn-primary" style="background: #FFAA00; color: #000; border-color: #FFAA00; font-weight: 700;">
+              Record & Activate
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="dash-card">
+        <div class="table-responsive">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>Receipt ID</th>
+                <th>Member</th>
+                <th>Plan Name</th>
+                <th>Amount (₹)</th>
+                <th>Channel</th>
+                <th>UTR / Voucher</th>
+                <th>Proof</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for pay in all_payments %}
+                <tr>
+                  <td>#PAY-{{ pay.id }}</td>
+                  <td>
+                    <strong>{{ pay.user.profile.full_name if pay.user and pay.user.profile else pay.user.username }}</strong>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">@{{ pay.user.username }}</div>
+                  </td>
+                  <td>{{ pay.plan.name if pay.plan else 'Custom Plan' }}</td>
+                  <td><strong style="color: #fff;">₹{{ "{:,.0f}".format(pay.amount) }}</strong></td>
+                  <td>
+                    {% if pay.payment_method == 'Offline_Cash' %}
+                      <span style="color: #FFAA00; font-weight: 600;">Offline Cash</span>
+                    {% else %}
+                      <span style="color: var(--neon-green); font-weight: 600;">Online UPI</span>
+                    {% endif %}
+                  </td>
+                  <td><code style="color: var(--neon-green); font-size: 0.95rem; font-weight: 700;">{{ pay.utr_number or 'N/A' }}</code></td>
+                  <td>
+                    {% if pay.receipt_image and pay.receipt_image != 'payment_qr.jpg' %}
+                      <button class="btn btn-outline btn-sm btn-view-receipt" data-receipt-src="{{ url_for('serve_media', filename=pay.receipt_image) }}" data-utr="{{ pay.utr_number }}" style="padding: 4px 10px; font-size: 0.8rem;">
+                        View Receipt
+                      </button>
+                    {% else %}
+                      <span style="color: var(--text-muted); font-size: 0.85rem;">None</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ pay.created_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                  <td>
+                    {% if pay.status == 'Approved' %}
+                      <span class="status-pill status-approved">Approved</span>
+                    {% elif pay.status == 'Pending' %}
+                      <span class="status-pill status-pending">Pending Approval</span>
+                    {% else %}
+                      <span class="status-pill status-rejected">Rejected</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if pay.status == 'Pending' %}
+                      <div style="display: flex; gap: 6px;">
+                        <form action="{{ url_for('approve_payment', payment_id=pay.id) }}" method="POST">
+                          <button type="submit" class="btn btn-primary btn-sm" style="padding: 5px 12px; font-size: 0.8rem;">
+                            Approve
+                          </button>
+                        </form>
+                        <form action="{{ url_for('reject_payment', payment_id=pay.id) }}" method="POST">
+                          <button type="submit" class="btn btn-secondary btn-sm" style="padding: 5px 12px; font-size: 0.8rem; color: #ff6666;">
+                            Reject
+                          </button>
+                        </form>
+                      </div>
+                    {% else %}
+                      <span style="color: var(--text-muted); font-size: 0.85rem;">Completed</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: MANAGE & CUSTOMIZE TRAINERS (EDIT PHOTO & DATA) -->
+    <div class="tab-content" id="staff-trainers">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Customized <span class="neon-text">Trainer Management</span></h1>
+          <p class="dash-subtitle">Staff permission: Add new mentors or update current trainer profile photos, bios, ratings, and fees.</p>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; align-items: start;">
+        
+        <!-- Add Trainer Form -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">Add New Trainer Profile</h3>
+          </div>
+
+          <form action="{{ url_for('add_trainer') }}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+              <label class="form-label" for="trName">Trainer Full Name *</label>
+              <input type="text" id="trName" name="name" class="form-control" placeholder="e.g. Arjun Kapoor" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="trSpec">Specialty / Discipline *</label>
+              <input type="text" id="trSpec" name="specialty" class="form-control" placeholder="e.g. Olympic Weightlifting & Biomechanics" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-group">
+                <label class="form-label" for="trExp">Experience (Years)</label>
+                <input type="number" id="trExp" name="experience_years" class="form-control" value="4" min="1" max="40">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="trRating">Rating (Out of 5.0)</label>
+                <input type="number" step="0.1" id="trRating" name="rating" class="form-control" value="4.9" min="1.0" max="5.0">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-group">
+                <label class="form-label" for="trPhone">Contact Phone</label>
+                <input type="text" id="trPhone" name="phone" class="form-control" placeholder="+91 98700 00000">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="trEmail">Email Address</label>
+                <input type="email" id="trEmail" name="email" class="form-control" placeholder="coach@thepowergym.in">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="trFee">Monthly Coaching Fee (₹)</label>
+              <input type="number" step="100" id="trFee" name="fee_per_month" class="form-control" value="2000" placeholder="e.g. 2000">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="trBio">Professional Bio & Coaching Philosophy</label>
+              <textarea id="trBio" name="bio" rows="3" class="form-control" placeholder="Summary of certifications and training approach"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="trPhoto">Trainer Photograph (Upload to Local Server)</label>
+              <input type="file" id="trPhoto" name="photo" class="form-control" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              Save Trainer to Database
+            </button>
+          </form>
+        </div>
+
+        <!-- Existing Trainers List with Edit Buttons -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">Current Coaching Roster ({{ trainers|length }})</h3>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            {% for t in trainers %}
+              <div style="display: flex; gap: 16px; padding: 16px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); align-items: flex-start;">
+                <img src="{{ url_for('serve_media', filename=t.photo) }}" alt="{{ t.name }}" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-green);" onerror="this.src='{{ url_for('static', filename='images/default_avatar.png') }}'">
+                <div style="flex: 1;">
+                  <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <h4 style="font-size: 1.15rem; color: #fff; margin: 0;">{{ t.name }}</h4>
+                    <span style="color: var(--neon-green); font-size: 0.85rem; font-weight: 700;">Rating: {{ t.rating }} / 5.0</span>
+                  </div>
+                  <div style="color: var(--neon-green); font-size: 0.88rem; margin: 2px 0 6px 0; font-weight: 600;">{{ t.specialty }}</div>
+                  <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0; line-height: 1.4;">{{ t.bio }}</p>
+                  <div style="font-size: 0.8rem; color: var(--text-muted); margin: 6px 0 10px 0;">
+                    Experience: {{ t.experience_years }} yrs | Fee: ₹{{ "{:,.0f}".format(t.fee_per_month) }}/mo | Phone: {{ t.phone or 'N/A' }}
+                  </div>
+                  
+                  <!-- Staff Edit & Delete Buttons -->
+                  <div style="display: flex; gap: 8px;">
+                    <button 
+                      type="button" 
+                      class="btn btn-outline btn-sm btn-open-edit-trainer"
+                      data-trainer-id="{{ t.id }}"
+                      data-trainer-name="{{ t.name }}"
+                      data-trainer-spec="{{ t.specialty }}"
+                      data-trainer-exp="{{ t.experience_years }}"
+                      data-trainer-rating="{{ t.rating }}"
+                      data-trainer-phone="{{ t.phone or '' }}"
+                      data-trainer-email="{{ t.email or '' }}"
+                      data-trainer-fee="{{ t.fee_per_month }}"
+                      data-trainer-bio="{{ t.bio or '' }}"
+                      data-trainer-photo="{{ t.photo }}"
+                      style="padding: 4px 12px; font-size: 0.8rem; border-color: #FFAA00; color: #FFAA00;"
+                    >
+                      Edit Coach & Photo
+                    </button>
+                    <form action="{{ url_for('delete_trainer', trainer_id=t.id) }}" method="POST" onsubmit="return confirm('Remove coach {{ t.name }} from roster?');" style="display: inline;">
+                      <button type="submit" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.8rem; color: #ff6666;">
+                        Remove
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 5: MANAGE ALL MEMBERSHIP PLANS (NEW DEDICATED DASHBOARD TAB) -->
+    <div class="tab-content" id="staff-plans">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Membership Plans <span class="neon-text">Management</span></h1>
+          <p class="dash-subtitle">Staff permission: Edit plan pricing in INR (₹), plan duration, features, and create new membership options.</p>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start;">
+        
+        <!-- Existing Plans List with Edit Controls -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">Active Plans in SQL Server ({{ all_plans|length }})</h3>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            {% for p in all_plans %}
+              <div style="background: rgba(255, 255, 255, 0.02); border: {% if p.is_popular %}2px solid var(--neon-green){% else %}1px solid var(--border-subtle){% endif %}; border-radius: var(--radius-md); padding: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <div>
+                    <h4 style="font-size: 1.25rem; color: #fff; margin: 0;">{{ p.name }}</h4>
+                    <span style="font-size: 0.82rem; color: var(--text-muted);">{{ p.duration_months }} Month{% if p.duration_months > 1 %}s{% endif %} Full Access</span>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 1.6rem; font-weight: 800; color: var(--neon-green); font-family: var(--font-heading);">
+                      ₹{{ "{:,.0f}".format(p.price) }}
+                    </div>
+                    {% if p.is_popular %}
+                      <span class="status-pill status-approved" style="font-size: 0.72rem;">Featured</span>
+                    {% endif %}
+                    {% if not p.is_active %}
+                      <span class="status-pill status-rejected" style="font-size: 0.72rem;">Deactivated</span>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5;">
+                  <strong>Features:</strong> {{ p.features_list.replace('\n', ' | ') }}
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                  <button 
+                    type="button" 
+                    class="btn btn-outline btn-sm btn-open-edit-plan"
+                    data-plan-id="{{ p.id }}"
+                    data-plan-name="{{ p.name }}"
+                    data-plan-months="{{ p.duration_months }}"
+                    data-plan-price="{{ p.price }}"
+                    data-plan-features="{{ p.features_list }}"
+                    data-plan-popular="{{ 'true' if p.is_popular else 'false' }}"
+                    data-plan-active="{{ 'true' if p.is_active else 'false' }}"
+                    style="padding: 4px 12px; font-size: 0.82rem; border-color: #FFAA00; color: #FFAA00;"
+                  >
+                    Edit Plan Details & Price
+                  </button>
+                  <form action="{{ url_for('delete_plan', plan_id=p.id) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.82rem;">
+                      {% if p.is_active %}Deactivate{% else %}Activate{% endif %}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Add New Plan Form -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">Create New Membership Tier</h3>
+          </div>
+
+          <form action="{{ url_for('add_plan') }}" method="POST">
+            <div class="form-group">
+              <label class="form-label" for="newPlanName">Plan Name *</label>
+              <input type="text" id="newPlanName" name="name" class="form-control" placeholder="e.g. 6-Month Transformation" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-group">
+                <label class="form-label" for="newPlanPrice">Price (in ₹ INR) *</label>
+                <input type="number" step="50" id="newPlanPrice" name="price" class="form-control" placeholder="e.g. 3999" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="newPlanMonths">Duration (Months) *</label>
+                <input type="number" id="newPlanMonths" name="duration_months" class="form-control" value="3" min="1" max="36" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newPlanFeatures">Features (One feature per line)</label>
+              <textarea id="newPlanFeatures" name="features_list" rows="4" class="form-control" placeholder="Full gym access&#10;Locker & Sauna access&#10;Diet chart consultation"></textarea>
+            </div>
+
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+              <input type="checkbox" id="newPlanPopular" name="is_popular" style="width: 18px; height: 18px;">
+              <label for="newPlanPopular" style="margin: 0; font-size: 0.9rem; color: #fff; cursor: pointer;">
+                Mark as "Recommended / Most Popular" Plan
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              Save Plan to SQL Database
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 6: MEMBER INQUIRIES -->
+    <div class="tab-content" id="staff-inquiries">
+      <div class="dash-header">
+        <div>
+          <h1 class="dash-title">Website <span class="neon-text">Contact Inquiries</span></h1>
+          <p class="dash-subtitle">Messages submitted by visitors and members through the website contact form.</p>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="table-responsive">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Message</th>
+                <th>Received Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if inquiries %}
+                {% for inq in inquiries %}
+                  <tr>
+                    <td>#MSG-{{ inq.id }}</td>
+                    <td><strong>{{ inq.name }}</strong></td>
+                    <td><a href="mailto:{{ inq.email }}" style="color: var(--neon-green);">{{ inq.email }}</a></td>
+                    <td>{{ inq.phone or 'N/A' }}</td>
+                    <td style="max-width: 320px; color: var(--text-secondary); font-size: 0.9rem;">{{ inq.message }}</td>
+                    <td>{{ inq.created_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                    No inquiries received yet.
+                  </td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL 1: EDIT MEMBER (STAFF PERMISSION ONLY) -->
+<div id="editMemberModal" class="modal-backdrop">
+  <div class="modal-box" style="border-color: #FFAA00;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="color: #FFAA00; font-size: 1.3rem; margin: 0;">Edit Member Details (Staff Admin)</h3>
+      <button class="modal-close-btn" onclick="closeModal('editMemberModal')" aria-label="Close edit member modal">&times;</button>
+    </div>
+
+    <form id="editMemberForm" action="" method="POST">
+      <div class="form-group">
+        <label class="form-label" for="modalMemberFullName">Member Full Legal Name *</label>
+        <input type="text" id="modalMemberFullName" name="full_name" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="modalMemberPhone">Mobile Phone</label>
+        <input type="text" id="modalMemberPhone" name="phone" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="modalMemberPlan">Assigned Membership Plan</label>
+        <select id="modalMemberPlan" name="plan_id" class="form-control">
+          <option value="">-- No Plan / Unassigned --</option>
+          {% for p in all_plans %}
+            <option value="{{ p.id }}">{{ p.name }} - ₹{{ "{:,.0f}".format(p.price) }} ({{ p.duration_months }} mo)</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="modalMemberTrainer">Assigned Coach / Personal Trainer</label>
+        <select id="modalMemberTrainer" name="trainer_id" class="form-control">
+          <option value="0">-- No Trainer Assigned --</option>
+          {% for t in trainers %}
+            <option value="{{ t.id }}">{{ t.name }} ({{ t.specialty }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="modalMemberGoal">Primary Fitness Goal</label>
+        <input type="text" id="modalMemberGoal" name="fitness_goal" class="form-control">
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; background: #FFAA00; color: #000; border-color: #FFAA00; font-weight: 700;">
+        Save Member Updates to SQL Database
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL 2: EDIT TRAINER & PROFILE PICTURE (STAFF PERMISSION ONLY) -->
+<div id="editTrainerModal" class="modal-backdrop">
+  <div class="modal-box" style="border-color: #FFAA00;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="color: #FFAA00; font-size: 1.3rem; margin: 0;">Customize Trainer Data & Photo</h3>
+      <button class="modal-close-btn" onclick="closeModal('editTrainerModal')" aria-label="Close edit trainer modal">&times;</button>
+    </div>
+
+    <form id="editTrainerForm" action="" method="POST" enctype="multipart/form-data">
+      <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle);">
+        <img id="modalTrainerCurrentPhoto" src="" alt="Coach Photo" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-green);" onerror="this.src='{{ url_for('static', filename='images/default_avatar.png') }}'">
+        <div style="flex: 1;">
+          <label class="form-label" for="modalTrainerNewPhoto">Change / Upload New Profile Picture</label>
+          <input type="file" id="modalTrainerNewPhoto" name="photo" class="form-control" accept="image/*">
+          <span style="font-size: 0.78rem; color: var(--text-muted);">Saves directly to local server storage</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="modalTrainerName">Trainer Full Name *</label>
+        <input type="text" id="modalTrainerName" name="name" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="modalTrainerSpec">Specialty / Discipline *</label>
+        <input type="text" id="modalTrainerSpec" name="specialty" class="form-control" required>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div class="form-group">
+          <label class="form-label" for="modalTrainerExp">Experience (Years)</label>
+          <input type="number" id="modalTrainerExp" name="experience_years" class="form-control" min="1" max="40">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="modalTrainerRating">Rating (Out of 5.0)</label>
+          <input type="number" step="0.1" id="modalTrainerRating" name="rating" class="form-control" min="1.0" max="5.0">
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div class="form-group">
+          <label class="form-label" for="modalTrainerPhone">Phone Number</label>
+          <input type="text" id="modalTrainerPhone" name="phone" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="modalTrainerEmail">Email Address</label>
+          <input type="email" id="modalTrainerEmail" name="email" class="form-control">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="modalTrainerFee">Monthly Coaching Fee (₹)</label>
+        <input type="number" step="100" id="modalTrainerFee" name="fee_per_month" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="modalTrainerBio">Bio & Qualifications</label>
+        <textarea id="modalTrainerBio" name="bio" rows="3" class="form-control"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; background: #FFAA00; color: #000; border-color: #FFAA00; font-weight: 700;">
+        Save Trainer Changes
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL 3: EDIT PLAN DETAILS & PRICE (STAFF PERMISSION ONLY) -->
+<div id="editPlanModal" class="modal-backdrop">
+  <div class="modal-box" style="border-color: #FFAA00;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="color: #FFAA00; font-size: 1.3rem; margin: 0;">Edit Membership Plan & Pricing</h3>
+      <button class="modal-close-btn" onclick="closeModal('editPlanModal')" aria-label="Close edit plan modal">&times;</button>
+    </div>
+
+    <form id="editPlanForm" action="" method="POST">
+      <div class="form-group">
+        <label class="form-label" for="modalPlanName">Plan Name *</label>
+        <input type="text" id="modalPlanName" name="name" class="form-control" required>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div class="form-group">
+          <label class="form-label" for="modalPlanPrice">Price in INR (₹) *</label>
+          <input type="number" step="50" id="modalPlanPrice" name="price" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="modalPlanMonths">Duration (Months) *</label>
+          <input type="number" id="modalPlanMonths" name="duration_months" class="form-control" min="1" max="36" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="modalPlanFeatures">Features (One per line)</label>
+        <textarea id="modalPlanFeatures" name="features_list" rows="5" class="form-control"></textarea>
+      </div>
+
+      <div style="display: flex; gap: 24px; margin-bottom: 20px;">
+        <label style="display: flex; align-items: center; gap: 8px; color: #fff; cursor: pointer; font-size: 0.9rem;">
+          <input type="checkbox" id="modalPlanPopular" name="is_popular" style="width: 18px; height: 18px;">
+          Recommended / Featured Plan
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; color: #fff; cursor: pointer; font-size: 0.9rem;">
+          <input type="checkbox" id="modalPlanActive" name="is_active" style="width: 18px; height: 18px;" checked>
+          Active for Signups
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; background: #FFAA00; color: #000; border-color: #FFAA00; font-weight: 700;">
+        Update Plan in Database
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Receipt Modal -->
+<div id="receiptModal" class="receipt-modal">
+  <div class="receipt-modal-content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+      <h3 style="color: #fff; font-size: 1.2rem; margin: 0;">Payment Proof Receipt</h3>
+      <button class="btn-modal-close" onclick="closeReceiptModal()" aria-label="Close receipt modal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div style="text-align: center;">
+      <img id="modalReceiptImg" src="" alt="Payment Receipt" style="max-width: 100%; max-height: 480px; border-radius: 8px; border: 1px solid var(--border-neon); object-fit: contain;">
+      <div id="modalReceiptUtr" style="margin-top: 10px; font-family: monospace; color: var(--neon-green); font-size: 0.95rem;"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('open');
+}
+
+function closeReceiptModal() {
+  document.getElementById('receiptModal').classList.remove('active');
+}
+
+// Receipt preview click
+document.querySelectorAll('.btn-view-receipt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const src = btn.getAttribute('data-receipt-src');
+    const utr = btn.getAttribute('data-utr');
+    document.getElementById('modalReceiptImg').src = src;
+    document.getElementById('modalReceiptUtr').textContent = 'Transaction UTR: ' + utr;
+    document.getElementById('receiptModal').classList.add('active');
+  });
+});
+
+// Edit Member Modal Opener
+document.querySelectorAll('.btn-open-edit-member').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const memberId = btn.getAttribute('data-member-id');
+    const name = btn.getAttribute('data-member-name');
+    const phone = btn.getAttribute('data-member-phone');
+    const goal = btn.getAttribute('data-member-goal');
+    const planId = btn.getAttribute('data-member-plan');
+    const trainerId = btn.getAttribute('data-member-trainer');
+
+    document.getElementById('editMemberForm').action = '/staff/edit-member/' + memberId;
+    document.getElementById('modalMemberFullName').value = name;
+    document.getElementById('modalMemberPhone').value = phone;
+    document.getElementById('modalMemberGoal').value = goal;
+    document.getElementById('modalMemberPlan').value = planId || '';
+    document.getElementById('modalMemberTrainer').value = trainerId || '0';
+
+    document.getElementById('editMemberModal').classList.add('open');
+  });
+});
+
+// Edit Trainer Modal Opener
+document.querySelectorAll('.btn-open-edit-trainer').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const trId = btn.getAttribute('data-trainer-id');
+    const name = btn.getAttribute('data-trainer-name');
+    const spec = btn.getAttribute('data-trainer-spec');
+    const exp = btn.getAttribute('data-trainer-exp');
+    const rating = btn.getAttribute('data-trainer-rating');
+    const phone = btn.getAttribute('data-trainer-phone');
+    const email = btn.getAttribute('data-trainer-email');
+    const fee = btn.getAttribute('data-trainer-fee');
+    const bio = btn.getAttribute('data-trainer-bio');
+    const photo = btn.getAttribute('data-trainer-photo');
+
+    document.getElementById('editTrainerForm').action = '/staff/edit-trainer/' + trId;
+    document.getElementById('modalTrainerName').value = name;
+    document.getElementById('modalTrainerSpec').value = spec;
+    document.getElementById('modalTrainerExp').value = exp;
+    document.getElementById('modalTrainerRating').value = rating;
+    document.getElementById('modalTrainerPhone').value = phone;
+    document.getElementById('modalTrainerEmail').value = email;
+    document.getElementById('modalTrainerFee').value = fee;
+    document.getElementById('modalTrainerBio').value = bio;
+    document.getElementById('modalTrainerCurrentPhoto').src = '/media/' + photo;
+
+    document.getElementById('editTrainerModal').classList.add('open');
+  });
+});
+
+// Edit Plan Modal Opener
+document.querySelectorAll('.btn-open-edit-plan').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const planId = btn.getAttribute('data-plan-id');
+    const name = btn.getAttribute('data-plan-name');
+    const months = btn.getAttribute('data-plan-months');
+    const price = btn.getAttribute('data-plan-price');
+    const features = btn.getAttribute('data-plan-features');
+    const popular = btn.getAttribute('data-plan-popular') === 'true';
+    const active = btn.getAttribute('data-plan-active') === 'true';
+
+    document.getElementById('editPlanForm').action = '/staff/edit-plan/' + planId;
+    document.getElementById('modalPlanName').value = name;
+    document.getElementById('modalPlanMonths').value = months;
+    document.getElementById('modalPlanPrice').value = price;
+    document.getElementById('modalPlanFeatures').value = features;
+    document.getElementById('modalPlanPopular').checked = popular;
+    document.getElementById('modalPlanActive').checked = active;
+
+    document.getElementById('editPlanModal').classList.add('open');
+  });
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal-backdrop')) {
+    e.target.classList.remove('open');
+  }
+});
+</script>
+{% endblock %}

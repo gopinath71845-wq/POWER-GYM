@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Portal | The Power Gym</title>
+  <meta name="description" content="The Power Gym Member Portal. Manage workout splits, diet charts, coach assignments, and UPI payments.">
+  
+  <link rel="icon" type="image/svg+xml" href="static/images/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/dashboard.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar" id="mainNavbar">
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="static/images/logo.svg" alt="The Power Gym Logo">
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#plans">Membership Plans</a></li>
+          <li><a href="index.html#trainers">Trainers</a></li>
+          <li><a href="index.html#payment-info">Scan & Pay (UPI)</a></li>
+          <li><a href="dashboard.html" class="neon-text active" style="font-weight: 700;">My Portal</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="payment.html" class="btn btn-primary btn-sm">Pay Fee / UPI</a>
+        <button id="headerLogoutBtn" class="btn btn-outline btn-sm" style="color: #ff7777; border-color: rgba(255, 100, 100, 0.4);">Log Out</button>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard Layout -->
+  <div class="dashboard-layout">
+    
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-profile">
+        <div class="profile-avatar-wrapper">
+          <img id="sidebarAvatarImg" src="static/images/default_avatar.png" alt="Member Avatar">
+        </div>
+        <h3 id="sidebarFullName" class="sidebar-username">Rahul Sharma</h3>
+        <div id="sidebarUsername" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">@rahul</div>
+        <span id="sidebarMemberId" class="sidebar-badge badge-customer">Member ID #TPG-1001</span>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li>
+          <button class="sidebar-link active" data-tab="overview">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Overview & Stats
+          </button>
+        </li>
+        <li>
+          <button class="sidebar-link" data-tab="profile">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Edit Profile & Photo
+          </button>
+        </li>
+        <li>
+          <button class="sidebar-link" data-tab="trainer">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Choose Trainer
+          </button>
+        </li>
+        <li>
+          <button class="sidebar-link" data-tab="payments">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            Payments & UPI QR
+          </button>
+        </li>
+        <li>
+          <button class="sidebar-link" data-tab="workout">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18h12M6 6h12M9 12h6"></path><circle cx="3" cy="18" r="1"></circle><circle cx="3" cy="6" r="1"></circle><circle cx="21" cy="18" r="1"></circle><circle cx="21" cy="6" r="1"></circle></svg>
+            Workout Schedule
+          </button>
+        </li>
+      </ul>
+
+      <div style="padding-top: 20px; border-top: 1px solid var(--border-subtle); margin-top: auto;">
+        <button id="sidebarLogoutBtn" class="btn btn-secondary btn-sm" style="width: 100%; color: #ff6666;">
+          Log Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-content">
+
+      <!-- TAB 1: OVERVIEW -->
+      <div class="tab-content active" id="overview">
+        <div class="dash-header">
+          <div>
+            <h1 class="dash-title">Welcome Back, <span id="dashGreetingName" class="neon-text">Rahul Sharma</span></h1>
+            <p class="dash-subtitle">Track your membership validity, assigned trainer, health metrics, and payment records.</p>
+          </div>
+          <div>
+            <a href="payment.html" class="btn btn-primary btn-sm">
+              Pay Fee: gopinath71845@oksbi
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Metrics -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Membership Status</div>
+            <div id="statMemberStatus" class="stat-value" style="font-size: 1.6rem; color: var(--neon-green);">
+              ACTIVE
+            </div>
+            <div id="statValidityDesc" class="stat-desc">
+              Valid till 01 Dec, 2026
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-title">Selected Coach</div>
+            <div id="statCoachName" class="stat-value" style="font-size: 1.4rem;">
+              Alex Vance
+            </div>
+            <div class="stat-desc">
+              <a href="#trainer" class="switch-trainer-link" style="color: var(--neon-green); text-decoration: underline;">Switch Coach</a>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-title">BMI Index</div>
+            <div id="statBmi" class="stat-value" style="color: var(--neon-green);">
+              23.5
+            </div>
+            <div id="statBmiMetrics" class="stat-desc">Weight: 74.5 kg | Height: 178 cm</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-title">Current Goal</div>
+            <div id="statGoal" class="stat-value" style="font-size: 1.15rem; line-height: 1.3;">
+              Heavy Compound Strength
+            </div>
+            <div class="stat-desc">Target: Hypertrophy & Progressive Strength</div>
+          </div>
+        </div>
+
+        <!-- Active Plan Banner -->
+        <div class="plan-status-banner">
+          <div class="plan-status-info">
+            <span style="font-size: 0.82rem; text-transform: uppercase; color: var(--neon-green); font-weight: 700; letter-spacing: 0.1em;">Current Membership Tier</span>
+            <h3 id="planBannerTitle">Power Pro (3 Months)</h3>
+            <p id="planBannerDesc" style="color: var(--text-secondary); font-size: 0.95rem;">
+              Price: <strong style="color: #fff;">₹2,499</strong> | Valid: 01 Sep 2026 to 01 Dec 2026
+            </p>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <a href="payment.html" class="btn btn-primary">
+              Renew / Upgrade Plan
+            </a>
+          </div>
+        </div>
+
+        <!-- Trainer Showcase in Overview -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">Assigned Personal Trainer</h3>
+            <button class="btn btn-outline btn-sm switch-trainer-btn">
+              Switch Trainer
+            </button>
+          </div>
+
+          <div class="my-trainer-box" id="overviewTrainerBox">
+            <img id="overviewTrainerImg" src="static/images/trainer_alex.jpg" alt="Trainer" class="my-trainer-img">
+            <div>
+              <h4 id="overviewTrainerName" style="font-size: 1.4rem; margin-bottom: 4px;">Alex Vance</h4>
+              <div id="overviewTrainerSpec" style="color: var(--neon-green); font-weight: 600; font-size: 0.95rem; margin-bottom: 8px;">Powerlifting & Heavy Compound Strength</div>
+              <p id="overviewTrainerBio" style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 12px;">Certified NSCA Powerlifting Coach with over 7 years coaching lifters. Specializes in squat, bench, and deadlift biomechanics.</p>
+              <div id="overviewTrainerMeta" style="font-size: 0.88rem; color: var(--text-muted);">
+                Phone: <strong style="color: #fff;">+91 98700 11223</strong> | Rating: 4.9 / 5.0
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: PROFILE EDIT & PHOTO UPLOAD -->
+      <div class="tab-content" id="profile">
+        <div class="dash-header">
+          <div>
+            <h1 class="dash-title">Customized <span class="neon-text">Member Profile</span></h1>
+            <p class="dash-subtitle">Update your fitness stats and personal details. Changes persist in your account.</p>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <form id="profileEditForm">
+            <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 30px; padding-bottom: 24px; border-bottom: 1px solid var(--border-subtle); flex-wrap: wrap;">
+              <div style="width: 100px; height: 100px; border-radius: 50%; overflow: hidden; border: 2px solid var(--neon-green); box-shadow: 0 0 15px var(--neon-green-glow);">
+                <img id="avatarPreviewImg" src="static/images/default_avatar.png" alt="Avatar Preview" style="width: 100%; height: 100%; object-fit: cover;">
+              </div>
+              <div>
+                <label class="form-label" for="profileAvatar">Profile Picture</label>
+                <input type="file" id="profileAvatar" class="form-control" accept="image/*">
+                <span style="font-size: 0.8rem; color: var(--text-muted);">JPG, PNG, or WEBP supported</span>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div class="form-group">
+                <label class="form-label" for="profFullName">Full Name *</label>
+                <input type="text" id="profFullName" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profEmail">Email</label>
+                <input type="email" id="profEmail" class="form-control" readonly style="opacity: 0.7;">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
+              <div class="form-group">
+                <label class="form-label" for="profPhone">Mobile Phone</label>
+                <input type="text" id="profPhone" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profAge">Age</label>
+                <input type="number" id="profAge" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profGender">Gender</label>
+                <select id="profGender" class="form-control">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+              <div class="form-group">
+                <label class="form-label" for="profHeight">Height (cm)</label>
+                <input type="number" step="0.1" id="profHeight" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profWeight">Weight (kg)</label>
+                <input type="number" step="0.1" id="profWeight" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profBlood">Blood Group</label>
+                <input type="text" id="profBlood" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profGoal">Primary Fitness Goal</label>
+              <input type="text" id="profGoal" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profAddress">Address / City</label>
+              <textarea id="profAddress" rows="2" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profEmergency">Emergency Contact Number</label>
+              <input type="text" id="profEmergency" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+              Save Profile Changes
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 3: CHOOSE / CHANGE TRAINER -->
+      <div class="tab-content" id="trainer">
+        <div class="dash-header">
+          <div>
+            <h1 class="dash-title">Customized <span class="neon-text">Personal Trainers</span></h1>
+            <p class="dash-subtitle">Select your dedicated coach. Switch your mentor anytime with 1 click.</p>
+          </div>
+        </div>
+
+        <div class="trainers-grid" id="trainerGridContainer">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- TAB 4: SCAN & PAY / PAYMENT HISTORY -->
+      <div class="tab-content" id="payments">
+        <div class="dash-header">
+          <div>
+            <h1 class="dash-title">Online UPI & <span class="neon-text">Payment Records</span></h1>
+            <p class="dash-subtitle">Pay using Google Pay / PhonePe / Paytm with our auto QR, or track verification status.</p>
+          </div>
+        </div>
+
+        <!-- Quick Pay Card -->
+        <div class="payment-showcase" style="margin-bottom: 40px;">
+          <div>
+            <span class="section-badge">Direct Fee Payment</span>
+            <h2 style="font-size: 1.8rem; margin-bottom: 12px;">Submit Payment Proof</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.95rem;">
+              Pay via UPI to <strong>gopinath71845@oksbi</strong> and enter your 12-digit UTR reference number below for instant record.
+            </p>
+
+            <div style="background: rgba(0, 255, 102, 0.05); border: 1px solid var(--border-neon); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+              <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Official UPI Merchant ID</div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px;">
+                <span style="font-family: monospace; font-size: 1.2rem; font-weight: 800; color: var(--neon-green);">gopinath71845@oksbi</span>
+                <button class="btn btn-outline btn-sm btn-copy-upi" data-upi="gopinath71845@oksbi">Copy UPI ID</button>
+              </div>
+            </div>
+
+            <form id="dashPaymentForm" style="background: #0d120f; border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px;">
+              <div class="form-group">
+                <label class="form-label" for="dashPayPlan">Membership Plan</label>
+                <select id="dashPayPlan" class="form-control">
+                  <option value="1">Starter Beast (Monthly) - ₹999</option>
+                  <option value="2" selected>Power Pro (3 Months) - ₹2,499</option>
+                  <option value="3">Iron Warrior (6 Months) - ₹4,499</option>
+                  <option value="4">Legend Titan (1 Year) - ₹7,999</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="dashPayUtr">UPI Transaction ID / UTR Number (12 Digits) *</label>
+                <input type="text" id="dashPayUtr" class="form-control" placeholder="e.g. 429038291048" required>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Submit Payment for Verification
+              </button>
+            </form>
+          </div>
+
+          <div class="qr-box-card">
+            <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 6px;">Official Merchant QR</h3>
+            <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 12px;">Zero transaction fees</p>
+            <div style="background: #fff; padding: 12px; border-radius: 12px; display: inline-block; margin-bottom: 12px;">
+              <img src="static/images/qr_code.jpg" alt="UPI QR" style="width: 200px; height: 200px; display: block; object-fit: contain;">
+            </div>
+            <div>
+              <a href="payment.html" class="btn btn-outline btn-sm">Open Dedicated Checkout</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment History Table -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">My Payment History</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="table-custom">
+              <thead>
+                <tr>
+                  <th>Voucher ID</th>
+                  <th>Plan Name</th>
+                  <th>Amount</th>
+                  <th>Method</th>
+                  <th>Reference / UTR</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="paymentHistoryBody">
+                <!-- Populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: WORKOUT SCHEDULE -->
+      <div class="tab-content" id="workout">
+        <div class="dash-header">
+          <div>
+            <h1 class="dash-title">Customized <span class="neon-text">Workout Split & Indian Diet</span></h1>
+            <p class="dash-subtitle">High-performance hypertrophy push-pull-legs regimen paired with macro-balanced Indian meals.</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 30px;">
+          <!-- Workout Card 1: Push Day -->
+          <div class="dash-card">
+            <h3 style="font-size: 1.25rem; color: var(--neon-green); margin-bottom: 12px;">Day 1 & 4: Push (Chest, Shoulders & Triceps)</h3>
+            <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; font-size: 0.92rem; color: var(--text-secondary);">
+              <li>• Barbell Bench Press: 4 sets x 6-8 reps</li>
+              <li>• Incline Dumbbell Press: 3 sets x 8-10 reps</li>
+              <li>• Overhead Standing Military Press: 4 sets x 8 reps</li>
+              <li>• Dumbbell Lateral Raises: 4 sets x 15 reps</li>
+              <li>• Cable Triceps Pushdowns: 3 sets x 12 reps</li>
+              <li>• Dips (Weighted): 3 sets to failure</li>
+            </ul>
+          </div>
+
+          <!-- Workout Card 2: Pull Day -->
+          <div class="dash-card">
+            <h3 style="font-size: 1.25rem; color: var(--neon-green); margin-bottom: 12px;">Day 2 & 5: Pull (Back, Rear Delts & Biceps)</h3>
+            <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; font-size: 0.92rem; color: var(--text-secondary);">
+              <li>• Conventional Deadlifts: 4 sets x 5 reps</li>
+              <li>• Lat Pulldowns / Weighted Pull-ups: 4 sets x 8 reps</li>
+              <li>• Barbell Bent-over Rows: 3 sets x 8-10 reps</li>
+              <li>• Face Pulls: 4 sets x 15 reps</li>
+              <li>• Incline Dumbbell Bicep Curls: 3 sets x 10 reps</li>
+              <li>• Hammer Curls: 3 sets x 12 reps</li>
+            </ul>
+          </div>
+
+          <!-- Workout Card 3: Leg Day -->
+          <div class="dash-card">
+            <h3 style="font-size: 1.25rem; color: var(--neon-green); margin-bottom: 12px;">Day 3 & 6: Legs & Core</h3>
+            <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; font-size: 0.92rem; color: var(--text-secondary);">
+              <li>• Barbell Back Squats: 4 sets x 6-8 reps</li>
+              <li>• Romanian Deadlifts (RDLs): 4 sets x 8-10 reps</li>
+              <li>• Leg Press: 3 sets x 12 reps</li>
+              <li>• Standing Calf Raises: 4 sets x 15 reps</li>
+              <li>• Hanging Leg Raises: 4 sets x 12 reps</li>
+              <li>• Plank: 3 sets x 60 seconds</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Indian Nutrition Protocol Card -->
+        <div class="dash-card">
+          <h3 style="font-size: 1.3rem; margin-bottom: 16px; color: #fff;">Customized Indian Nutrition Protocol (High-Protein)</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; font-size: 0.9rem;">
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 14px;">
+              <strong style="color: var(--neon-green);">Meal 1: Breakfast</strong>
+              <p style="color: var(--text-secondary); margin-top: 6px;">4 Whole Eggs + 2 Egg Whites (or 150g Paneer Bhurji) + 2 slices Multigrain Roti / Toast + Black Coffee.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 14px;">
+              <strong style="color: var(--neon-green);">Meal 2: Lunch</strong>
+              <p style="color: var(--text-secondary); margin-top: 6px;">200g Chicken Breast / Tofu / Rajma + 1 cup Brown Rice / 2 Chapatis + 1 bowl Green Salad & Curd.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 14px;">
+              <strong style="color: var(--neon-green);">Meal 3: Pre-Workout</strong>
+              <p style="color: var(--text-secondary); margin-top: 6px;">1 Banana + 1 tbsp Natural Peanut Butter + 1 cup Black Coffee / Pre-workout formula.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 14px;">
+              <strong style="color: var(--neon-green);">Meal 4: Post-Workout & Dinner</strong>
+              <p style="color: var(--text-secondary); margin-top: 6px;">1 Scoop Whey Protein + 150g Soya Chunks / Paneer / Fish Curry + 1 Roti + Sautéed Vegetables.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script src="static/js/gym-store.js"></script>
+  <script src="static/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check session or fallback to demo member Rahul
+      let session = GymStore.getCurrentSession();
+      if (!session || session.role !== 'customer') {
+        const db = GymStore.getData();
+        session = db.members[0]; // Rahul Sharma
+        GymStore.setSession(session);
+      }
+
+      function populateDashboard() {
+        const db = GymStore.getData();
+        const member = db.members.find(m => m.id === session.id) || session;
+        const plan = db.plans.find(p => p.id === member.plan_id) || db.plans[1];
+        const trainer = db.trainers.find(t => t.id === member.trainer_id) || db.trainers[0];
+
+        // Profile & Sidebar
+        document.getElementById('sidebarFullName').textContent = member.full_name;
+        document.getElementById('sidebarUsername').textContent = `@${member.username}`;
+        document.getElementById('sidebarMemberId').textContent = `Member ID #TPG-${member.id}`;
+        document.getElementById('dashGreetingName').textContent = member.full_name;
+
+        if (member.avatar) {
+          document.getElementById('sidebarAvatarImg').src = member.avatar;
+          document.getElementById('avatarPreviewImg').src = member.avatar;
+        }
+
+        // Stats
+        const statStatus = document.getElementById('statMemberStatus');
+        statStatus.textContent = member.membership_status || 'ACTIVE';
+        statStatus.style.color = (member.membership_status === 'ACTIVE') ? 'var(--neon-green)' : '#FFAA00';
+
+        document.getElementById('statValidityDesc').textContent = `Valid till ${member.membership_end || '31 Dec 2026'}`;
+        document.getElementById('statCoachName').textContent = trainer ? trainer.name : 'Not Assigned';
+        
+        // BMI Calculation
+        let bmi = '23.5';
+        if (member.height_cm && member.weight_kg) {
+          const hM = member.height_cm / 100;
+          bmi = (member.weight_kg / (hM * hM)).toFixed(1);
+        }
+        document.getElementById('statBmi').textContent = bmi;
+        document.getElementById('statBmiMetrics').textContent = `Weight: ${member.weight_kg || 74} kg | Height: ${member.height_cm || 178} cm`;
+        document.getElementById('statGoal').textContent = member.fitness_goal || 'Hypertrophy & Strength';
+
+        // Plan Banner
+        document.getElementById('planBannerTitle').textContent = plan.name;
+        document.getElementById('planBannerDesc').innerHTML = `Price: <strong style="color: #fff;">₹${plan.price.toLocaleString('en-IN')}</strong> | Valid: ${member.membership_start || '01 Sep 2026'} to ${member.membership_end || '01 Dec 2026'}`;
+
+        // Overview Trainer Box
+        if (trainer) {
+          document.getElementById('overviewTrainerImg').src = trainer.photo;
+          document.getElementById('overviewTrainerName').textContent = trainer.name;
+          document.getElementById('overviewTrainerSpec').textContent = trainer.specialty;
+          document.getElementById('overviewTrainerBio').textContent = trainer.bio;
+          document.getElementById('overviewTrainerMeta').innerHTML = `Phone: <strong style="color: #fff;">${trainer.phone}</strong> | Rating: ${trainer.rating} / 5.0`;
+        }
+
+        // Fill Profile Form Inputs
+        document.getElementById('profFullName').value = member.full_name || '';
+        document.getElementById('profEmail').value = member.email || '';
+        document.getElementById('profPhone').value = member.phone || '';
+        document.getElementById('profAge').value = member.age || '';
+        document.getElementById('profGender').value = member.gender || 'Male';
+        document.getElementById('profHeight').value = member.height_cm || '';
+        document.getElementById('profWeight').value = member.weight_kg || '';
+        document.getElementById('profBlood').value = member.blood_group || '';
+        document.getElementById('profGoal').value = member.fitness_goal || '';
+        document.getElementById('profAddress').value = member.address || '';
+        document.getElementById('profEmergency').value = member.emergency_contact || '';
+
+        // Render Trainers Grid
+        renderTrainers(db.trainers, member.trainer_id);
+
+        // Render Payments Table
+        renderPayments(db.payments, member.id);
+      }
+
+      function renderTrainers(trainers, currentTrainerId) {
+        const container = document.getElementById('trainerGridContainer');
+        container.innerHTML = '';
+
+        trainers.forEach(tr => {
+          const isCurrent = (tr.id === currentTrainerId);
+          const card = document.createElement('div');
+          card.className = 'trainer-card';
+          card.style.border = isCurrent ? '2px solid var(--neon-green)' : '1px solid var(--border-subtle)';
+          card.innerHTML = `
+            <div class="trainer-img-wrapper" style="height: 280px;">
+              <img src="${tr.photo}" alt="${tr.name}">
+              <div class="trainer-badge">Rating: ${tr.rating} / 5.0</div>
+            </div>
+            <div class="trainer-info">
+              <h3 class="trainer-name">${tr.name}</h3>
+              <div class="trainer-spec">${tr.specialty}</div>
+              <p class="trainer-bio">${tr.bio}</p>
+              <div class="trainer-footer">
+                <span class="trainer-exp">Experience: ${tr.experience_years}+ yrs</span>
+                ${isCurrent 
+                  ? '<span class="status-pill status-approved" style="background: rgba(0,255,102,0.15); color: var(--neon-green); padding: 6px 12px; border-radius: 6px; font-weight: 700;">Currently Assigned Coach</span>' 
+                  : `<button class="btn btn-primary btn-sm btn-select-coach" data-id="${tr.id}">Select Coach</button>`}
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+        // Add Select Coach Click Listeners
+        container.querySelectorAll('.btn-select-coach').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const trId = btn.getAttribute('data-id');
+            GymStore.selectTrainer(session.id, trId);
+            showToast('Coach assigned successfully!');
+            populateDashboard();
+          });
+        });
+      }
+
+      function renderPayments(payments, memberId) {
+        const tbody = document.getElementById('paymentHistoryBody');
+        tbody.innerHTML = '';
+        const memberPayments = payments.filter(p => p.user_id === memberId);
+
+        if (memberPayments.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No payment transactions recorded yet.</td></tr>';
+          return;
+        }
+
+        memberPayments.forEach(p => {
+          const tr = document.createElement('tr');
+          const statusClass = p.status === 'Approved' ? 'status-approved' : (p.status === 'Pending' ? 'status-pending' : 'status-rejected');
+          tr.innerHTML = `
+            <td style="font-family: monospace; font-weight: 700; color: var(--neon-green);">#TPG-${p.id}</td>
+            <td><strong>${p.plan_name}</strong></td>
+            <td><strong style="color: var(--neon-green);">₹${p.amount.toLocaleString('en-IN')}</strong></td>
+            <td>${p.method === 'UPI_QR' ? 'UPI QR' : 'Front Desk Cash'}</td>
+            <td style="font-family: monospace; font-size: 0.85rem;">${p.utr}</td>
+            <td>${p.date}</td>
+            <td><span class="status-pill ${statusClass}" style="padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; background: ${p.status === 'Approved' ? 'rgba(0,255,102,0.15)' : 'rgba(255,170,0,0.15)'}; color: ${p.status === 'Approved' ? 'var(--neon-green)' : '#FFAA00'};">${p.status}</span></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Handle Tab Switching
+      const tabLinks = document.querySelectorAll('.sidebar-link');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabLinks.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabLinks.forEach(l => l.classList.remove('active'));
+          tabContents.forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          const tabId = btn.getAttribute('data-tab');
+          const target = document.getElementById(tabId);
+          if (target) target.classList.add('active');
+        });
+      });
+
+      // Switch Trainer button in Overview
+      document.querySelectorAll('.switch-trainer-btn, .switch-trainer-link').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          const trTabBtn = document.querySelector('[data-tab="trainer"]');
+          if (trTabBtn) trTabBtn.click();
+        });
+      });
+
+      // Profile Form Submission
+      document.getElementById('profileEditForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const profileData = {
+          full_name: document.getElementById('profFullName').value.trim(),
+          phone: document.getElementById('profPhone').value.trim(),
+          age: parseInt(document.getElementById('profAge').value) || 25,
+          gender: document.getElementById('profGender').value,
+          height_cm: parseFloat(document.getElementById('profHeight').value) || 175,
+          weight_kg: parseFloat(document.getElementById('profWeight').value) || 72,
+          blood_group: document.getElementById('profBlood').value.trim(),
+          fitness_goal: document.getElementById('profGoal').value.trim(),
+          address: document.getElementById('profAddress').value.trim(),
+          emergency_contact: document.getElementById('profEmergency').value.trim()
+        };
+
+        GymStore.updateMemberProfile(session.id, profileData);
+        showToast('Profile updated successfully!');
+        populateDashboard();
+      });
+
+      // Quick Payment Submit inside Dashboard
+      document.getElementById('dashPaymentForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const planId = parseInt(document.getElementById('dashPayPlan').value);
+        const utr = document.getElementById('dashPayUtr').value.trim();
+
+        GymStore.submitPayment({
+          user_id: session.id,
+          user_name: session.full_name || session.username,
+          plan_id: planId,
+          method: 'UPI_QR',
+          utr: utr,
+          notes: 'Dashboard UPI submission'
+        });
+
+        document.getElementById('dashPayUtr').value = '';
+        showToast('Payment submitted for verification!');
+        populateDashboard();
+      });
+
+      // Logout
+      function logout() {
+        GymStore.clearSession();
+        showToast('Logged out successfully.');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 500);
+      }
+
+      document.getElementById('headerLogoutBtn').addEventListener('click', logout);
+      document.getElementById('sidebarLogoutBtn').addEventListener('click', logout);
+
+      // Initial populate
+      populateDashboard();
+    });
+  </script>
+</body>
+</html>

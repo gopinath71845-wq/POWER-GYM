@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Registration | The Power Gym</title>
+  <meta name="description" content="Register authorized staff or trainer account for The Power Gym. Security key required.">
+  
+  <link rel="icon" type="image/svg+xml" href="static/images/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar" id="mainNavbar">
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="static/images/logo.svg" alt="The Power Gym Logo">
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#plans">Membership Plans</a></li>
+          <li><a href="index.html#trainers">Trainers</a></li>
+          <li><a href="index.html#payment-info">Scan & Pay (UPI)</a></li>
+          <li><a href="login.html" class="nav-portal-badge nav-portal-member">Member Portal</a></li>
+          <li><a href="staff-login.html" class="nav-portal-badge nav-portal-staff active">Staff Portal</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="register.html" class="btn btn-primary btn-sm">Join Now</a>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Staff Registration Section -->
+  <section class="section" style="min-height: calc(100vh - 160px); display: flex; align-items: center; padding: 50px 0;">
+    <div class="container" style="max-width: 540px;">
+      <div style="background: var(--bg-card); border: 1px solid rgba(255, 170, 0, 0.45); border-radius: var(--radius-lg); padding: 42px 36px; box-shadow: 0 0 35px rgba(255, 170, 0, 0.15);">
+        
+        <div style="text-align: center; margin-bottom: 24px;">
+          <span class="sidebar-badge badge-staff" style="font-size: 0.82rem; padding: 6px 16px; letter-spacing: 0.1em; display: inline-block;">
+            Authorized Staff Onboarding
+          </span>
+          <h1 style="font-size: 2.2rem; margin-top: 12px; color: #FFF;">Register <span style="color: #FFAA00;">Staff Account</span></h1>
+          <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 4px;">
+            Create an administrator profile to verify payments and manage memberships.
+          </p>
+        </div>
+
+        <div id="staffRegAlert" style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;"></div>
+
+        <form id="staffRegForm">
+          <div class="form-group">
+            <label class="form-label" for="staffRegName">Full Name *</label>
+            <input type="text" id="staffRegName" class="form-control" placeholder="e.g. Anand Kumar" required autofocus>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="staffRegUser">Staff Username *</label>
+              <input type="text" id="staffRegUser" class="form-control" placeholder="e.g. anand_coach" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="staffRegPhone">Mobile Number</label>
+              <input type="tel" id="staffRegPhone" class="form-control" placeholder="+91 98765 00000">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="staffRegEmail">Official Staff Email *</label>
+            <input type="email" id="staffRegEmail" class="form-control" placeholder="e.g. anand@thepowergym.in" required>
+          </div>
+
+          <!-- Server Master Key -->
+          <div class="form-group" style="background: rgba(255, 170, 0, 0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 170, 0, 0.3);">
+            <label class="form-label" for="staffRegKey" style="color: #FFAA00;">Server Security Master Key *</label>
+            <input type="password" id="staffRegKey" class="form-control" placeholder="Enter Staff Security Key" value="" required style="font-family: monospace; border-color: rgba(255, 170, 0, 0.4);">
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Confidential staff authorization key required</span>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label class="form-label" for="staffRegPass">Password (Min 6 Characters) *</label>
+            <input type="password" id="staffRegPass" class="form-control" placeholder="Create staff password" minlength="6" required>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="form-group">
+            <label class="form-label" for="staffRegPassConfirm">Confirm Password *</label>
+            <input type="password" id="staffRegPassConfirm" class="form-control" placeholder="Re-enter password" minlength="6" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px; background: #FFAA00; color: #000; border-color: #FFAA00; font-weight: 800;">
+            Register Staff Account
+          </button>
+
+          <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem;">
+            <div>
+              Already have staff credentials? 
+              <a href="staff-login.html" style="color: #FFAA00; font-weight: 700;">Staff Login</a>
+            </div>
+            <a href="index.html" class="neon-text">Home &rarr;</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <img src="static/images/logo.svg" alt="The Power Gym Logo" style="height: 44px; margin-bottom: 18px;">
+          <p style="margin-bottom: 20px; font-size: 0.95rem; line-height: 1.6;">
+            The Power Gym is India's ultimate high-performance fitness destination. Equipped with world-class strength machines, certified trainers, and personalized nutrition protocols.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="staff-login.html">Staff Console</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 The Power Gym. All Rights Reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="static/js/gym-store.js"></script>
+  <script src="static/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('staffRegForm');
+      const alertBox = document.getElementById('staffRegAlert');
+      const keyInput = document.getElementById('staffRegKey');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alertBox.style.display = 'none';
+
+        const name = document.getElementById('staffRegName').value.trim();
+        const user = document.getElementById('staffRegUser').value.trim();
+        const phone = document.getElementById('staffRegPhone').value.trim();
+        const email = document.getElementById('staffRegEmail').value.trim();
+        const key = document.getElementById('staffRegKey').value.trim();
+        const pass = document.getElementById('staffRegPass').value;
+        const confirmPass = document.getElementById('staffRegPassConfirm').value;
+
+        if (pass !== confirmPass) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = 'rgba(255, 82, 82, 0.15)';
+          alertBox.style.border = '1px solid #FF5252';
+          alertBox.style.color = '#FF5252';
+          alertBox.textContent = 'Passwords do not match.';
+          return;
+        }
+
+        const result = GymStore.registerStaff({
+          full_name: name,
+          username: user,
+          phone: phone,
+          email: email,
+          security_key: key,
+          password: pass
+        });
+
+        if (!result.success) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = 'rgba(255, 82, 82, 0.15)';
+          alertBox.style.border = '1px solid #FF5252';
+          alertBox.style.color = '#FF5252';
+          alertBox.textContent = result.message || 'Staff registration failed.';
+          return;
+        }
+
+        showToast('Staff account created! Opening Staff Console...');
+        setTimeout(() => {
+          window.location.href = 'staff-dashboard.html';
+        }, 600);
+      });
+    });
+  </script>
+</body>
+</html>

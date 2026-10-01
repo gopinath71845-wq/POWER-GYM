@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Login | The Power Gym</title>
+  <meta name="description" content="Authorized Staff and Administrator Console login for The Power Gym. Master security key required.">
+  
+  <link rel="icon" type="image/svg+xml" href="static/images/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar" id="mainNavbar">
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="static/images/logo.svg" alt="The Power Gym Logo">
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#plans">Membership Plans</a></li>
+          <li><a href="index.html#trainers">Trainers</a></li>
+          <li><a href="index.html#payment-info">Scan & Pay (UPI)</a></li>
+          <li><a href="index.html#bmi">BMI Tool</a></li>
+          <li><a href="login.html" class="nav-portal-badge nav-portal-member">Member Portal</a></li>
+          <li><a href="staff-login.html" class="nav-portal-badge nav-portal-staff active">Staff Portal</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="register.html" class="btn btn-primary btn-sm">Join Now</a>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Staff Login Section -->
+  <section class="section" style="min-height: calc(100vh - 160px); display: flex; align-items: center; padding: 50px 0;">
+    <div class="container" style="max-width: 500px;">
+      <div style="background: var(--bg-card); border: 1px solid rgba(255, 170, 0, 0.45); border-radius: var(--radius-lg); padding: 42px 36px; box-shadow: 0 0 35px rgba(255, 170, 0, 0.15);">
+        
+        <div style="text-align: center; margin-bottom: 24px;">
+          <span class="sidebar-badge badge-staff" style="font-size: 0.82rem; padding: 6px 16px; letter-spacing: 0.1em; display: inline-block;">
+            Master Staff & Admin Console
+          </span>
+          <h1 style="font-size: 2.2rem; margin-top: 12px; color: #FFF;">Employee <span style="color: #FFAA00;">Portal</span></h1>
+          <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 4px;">
+            Authorized staff credentials and Master Security Key required.
+          </p>
+        </div>
+
+        <!-- Quick Demo Staff Credentials Box -->
+        <div style="background: rgba(255, 170, 0, 0.06); border: 1px dashed rgba(255, 170, 0, 0.4); border-radius: 10px; padding: 14px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 0.82rem; font-weight: 700; color: #FFAA00; text-transform: uppercase;">⚡ Quick Demo Staff Login:</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">One-click fill</span>
+          </div>
+          <button type="button" id="demoStaffBtn" class="btn btn-outline btn-sm" style="width: 100%; font-size: 0.82rem; padding: 7px 12px; border-color: #FFAA00; color: #FFAA00;">
+            Login as Admin (admin / admin123)
+          </button>
+        </div>
+
+        <div id="staffAlert" style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;"></div>
+
+        <form id="staffLoginForm" autocomplete="on">
+          <!-- Staff Username / Email -->
+          <div class="form-group">
+            <label class="form-label" for="staffUser">Staff Username or Email</label>
+            <input 
+              type="text" 
+              id="staffUser" 
+              name="username_or_email" 
+              class="form-control" 
+              placeholder="e.g. admin or staff@thepowergym.in" 
+              autocomplete="username" 
+              required 
+              autofocus
+            >
+          </div>
+
+          <!-- Staff Password with Eye Toggle -->
+          <div class="form-group">
+            <label class="form-label" for="staffPass" style="display: flex; justify-content: space-between; align-items: center;">
+              <span>Staff Password</span>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">Toggle visibility</span>
+            </label>
+            <div class="input-password-wrapper">
+              <input 
+                type="password" 
+                id="staffPass" 
+                name="password" 
+                class="form-control" 
+                placeholder="Enter staff security password" 
+                autocomplete="current-password" 
+                required
+              >
+              <button type="button" class="btn-toggle-eye" data-target="staffPass" title="Toggle visibility" aria-label="Toggle password visibility">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </button>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 6px;">
+              <button type="button" id="openForgotStaffPassBtn" style="background: none; border: none; color: #FFAA00; font-size: 0.82rem; cursor: pointer; text-decoration: underline; padding: 0;">
+                Forgot Staff Password?
+              </button>
+            </div>
+          </div>
+
+          <!-- Staff Master Authorization Key -->
+          <div class="staff-key-card" style="border-color: rgba(255, 170, 0, 0.4); background: rgba(255, 170, 0, 0.04); margin-bottom: 20px; padding: 14px; border-radius: 8px; border: 1px solid rgba(255, 170, 0, 0.3);">
+            <div class="staff-key-header">
+              <span style="color: #FFAA00; font-weight: 700; font-size: 0.9rem;">Server Security Key *</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 4px 0 10px 0;">
+              Enter gym server master authorization key
+            </p>
+            <div class="input-password-wrapper">
+              <input 
+                type="password" 
+                id="staffKey" 
+                name="staff_key" 
+                class="form-control" 
+                placeholder="Enter Server Security Key" 
+                value=""
+                autocomplete="off" 
+                required
+                style="border-color: rgba(255, 170, 0, 0.4); font-family: monospace; letter-spacing: 1px;"
+              >
+              <button type="button" class="btn-toggle-eye" data-target="staffKey" title="Toggle visibility" aria-label="Toggle key visibility">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" id="submitStaffLoginBtn" class="btn btn-primary" style="width: 100%; margin-top: 10px; background: #FFAA00; color: #000; border-color: #FFAA00; box-shadow: 0 0 20px rgba(255, 170, 0, 0.4); font-weight: 800;">
+            Authenticate Staff Access
+          </button>
+
+          <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; flex-wrap: wrap; gap: 8px;">
+            <a href="staff-register.html" style="color: #FFAA00; font-weight: 600;">Register New Staff Account</a>
+            <a href="index.html" class="neon-text">&larr; Return to Home</a>
+          </div>
+
+          <div style="text-align: center; margin-top: 16px; font-size: 0.8rem; color: #FFAA00; opacity: 0.85;">
+            Master administrative session securely managed in local storage.
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Staff Forgot Password Modal -->
+  <div id="forgotStaffPasswordModal" class="staff-key-modal-overlay">
+    <div class="staff-key-modal-card" style="max-width: 480px; border-color: rgba(255, 170, 0, 0.45); box-shadow: 0 0 35px rgba(255, 170, 0, 0.2);">
+      <button type="button" class="staff-key-modal-close" id="closeForgotStaffModalBtn" aria-label="Close modal">&times;</button>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div class="staff-key-shield-icon" style="background: rgba(255, 170, 0, 0.1); border: 1px solid rgba(255, 170, 0, 0.4); width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; box-shadow: 0 0 20px rgba(255, 170, 0, 0.25);">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFAA00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <span class="staff-key-badge" style="color: #FFAA00; border-color: rgba(255, 170, 0, 0.4); background: rgba(255, 170, 0, 0.08); font-size: 0.72rem; padding: 3px 12px; border-radius: 20px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; border: 1px solid;">STAFF CREDENTIAL RECOVERY</span>
+        <h2 style="font-size: 1.5rem; color: #FFFFFF; margin: 8px 0 4px 0;">Reset Staff <span style="color: #FFAA00;">Password</span></h2>
+        <p style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.45;">
+          Enter your registered staff email or admin username to generate a 6-digit recovery code.
+        </p>
+      </div>
+
+      <div id="forgotStaffAlert" style="display: none; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 0.86rem; font-weight: 600;"></div>
+
+      <!-- Step 1: Request Code -->
+      <div id="forgotStaffStep1">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="resetStaffEmailInput">Staff Username or Registered Email</label>
+          <input 
+            type="text" 
+            id="resetStaffEmailInput" 
+            class="form-control" 
+            placeholder="e.g. admin or staff@thepowergym.in" 
+            autocomplete="email"
+            style="border-color: rgba(255, 170, 0, 0.4);"
+          >
+        </div>
+        <button type="button" id="btnSendStaffResetCode" class="btn btn-primary" style="width: 100%; background: #FFAA00; color: #000; border-color: #FFAA00; font-weight: 800; box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);">
+          Generate & Send Verification Code (Email)
+        </button>
+      </div>
+
+      <!-- Simulated Email Notification Box (shown after code generation) -->
+      <div id="simulatedStaffEmailBox" style="display: none; background: rgba(255, 170, 0, 0.06); border: 1px dashed rgba(255, 170, 0, 0.45); border-radius: 10px; padding: 14px; margin-top: 16px; animation: slideDown 0.3s ease;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 0.76rem; font-weight: 800; color: #FFAA00; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            Incoming Email Message
+          </span>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Just now</span>
+        </div>
+        <div style="font-size: 0.82rem; color: #ddd; line-height: 1.5; margin-bottom: 10px; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 6px;">
+          <div><strong>From:</strong> security@thepowergym.in</div>
+          <div><strong>To:</strong> <span id="staffEmailBoxRecipient" style="color: #FFAA00; font-weight: 600;"></span></div>
+          <div><strong>Subject:</strong> Staff Security Console Password Reset Code</div>
+        </div>
+        <div style="background: rgba(0, 0, 0, 0.75); border: 1px solid rgba(255, 170, 0, 0.35); border-radius: 8px; padding: 12px; text-align: center;">
+          <span style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">6-DIGIT VERIFICATION CODE</span>
+          <span id="staffEmailBoxCode" style="font-size: 1.65rem; font-weight: 900; letter-spacing: 6px; color: #FFAA00; font-family: monospace;"></span>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 8px;">
+          Valid for 15 minutes. Use this code below to set your new staff password.
+        </div>
+      </div>
+
+      <!-- Step 2: Enter Code & New Password -->
+      <div id="forgotStaffStep2" style="display: none; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="resetStaffCodeInput">Enter 6-Digit Verification Code</label>
+          <input 
+            type="text" 
+            id="resetStaffCodeInput" 
+            class="form-control" 
+            placeholder="e.g. 123456" 
+            maxlength="6"
+            style="font-family: monospace; letter-spacing: 3px; font-weight: 800; text-align: center; font-size: 1.15rem; border-color: rgba(255, 170, 0, 0.5);"
+          >
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="resetStaffNewPass">New Staff Password (min 6 characters)</label>
+          <div class="input-password-wrapper">
+            <input 
+              type="password" 
+              id="resetStaffNewPass" 
+              class="form-control" 
+              placeholder="Enter new staff password"
+              style="border-color: rgba(255, 170, 0, 0.35);"
+            >
+            <button type="button" class="btn-toggle-eye" data-target="resetStaffNewPass" title="Toggle visibility" aria-label="Toggle password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label" for="resetStaffConfirmPass">Confirm New Staff Password</label>
+          <div class="input-password-wrapper">
+            <input 
+              type="password" 
+              id="resetStaffConfirmPass" 
+              class="form-control" 
+              placeholder="Confirm new staff password"
+              style="border-color: rgba(255, 170, 0, 0.35);"
+            >
+            <button type="button" class="btn-toggle-eye" data-target="resetStaffConfirmPass" title="Toggle visibility" aria-label="Toggle password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="button" id="btnSubmitStaffResetPassword" class="btn btn-primary" style="width: 100%; background: #FFAA00; color: #000; border-color: #FFAA00; font-weight: 800; box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);">
+          Reset Staff Password & Save
+        </button>
+      </div>
+
+      <div style="margin-top: 16px; text-align: center;">
+        <button type="button" id="cancelForgotStaffModalBtn" class="btn btn-outline btn-sm" style="font-size: 0.82rem; padding: 6px 14px; border-color: rgba(255,170,0,0.4); color: #FFAA00;">
+          Back to Staff Login
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <img src="static/images/logo.svg" alt="The Power Gym Logo" style="height: 44px; margin-bottom: 18px;">
+          <p style="margin-bottom: 20px; font-size: 0.95rem; line-height: 1.6;">
+            The Power Gym is India's ultimate high-performance fitness destination. Equipped with world-class strength machines, certified trainers, and personalized nutrition protocols.
+          </p>
+          <div>
+            <span class="upi-id-pill btn-copy-upi" data-upi="gopinath71845@oksbi" title="Click to copy UPI ID">
+              UPI: gopinath71845@oksbi [Copy]
+            </span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html#plans">Membership Pricing</a></li>
+            <li><a href="index.html#trainers">Personal Trainers</a></li>
+            <li><a href="index.html#bmi">BMI Calculator</a></li>
+            <li><a href="staff-login.html">Staff & Trainer Portal</a></li>
+            <li><a href="staff-register.html">Staff Registration</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Location & Contact</h4>
+          <p style="margin-bottom: 10px;"><strong>The Power Gym</strong><br>No. 18, Fitness Boulevard, Neon Arcade, Metro City, India</p>
+          <p style="margin-bottom: 8px;"><strong>Phone:</strong> +91 98765 43210</p>
+          <p style="margin-bottom: 8px;"><strong>Email:</strong> contact@thepowergym.in</p>
+          <p style="color: var(--neon-green); font-size: 0.9rem; font-weight: 700;">Merchant UPI: gopinath71845@oksbi</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 The Power Gym. All Rights Reserved.</div>
+        <div style="display: flex; gap: 20px;">
+          <a href="staff-login.html" style="color: #FFAA00;">Staff Console</a>
+          <a href="index.html">Home</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="static/js/gym-store.js"></script>
+  <script src="static/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('staffLoginForm');
+      const alertBox = document.getElementById('staffAlert');
+      const userInput = document.getElementById('staffUser');
+      const passInput = document.getElementById('staffPass');
+      const keyInput = document.getElementById('staffKey');
+
+      // Prefill verified key from pass key gate if available
+      const verifiedKey = sessionStorage.getItem('the_power_gym_verified_key') || 'ASDFGF123456*';
+      if (keyInput && !keyInput.value) {
+        keyInput.value = verifiedKey;
+      }
+
+      // Quick Demo Button
+      document.getElementById('demoStaffBtn').addEventListener('click', () => {
+        userInput.value = 'admin';
+        passInput.value = 'admin123';
+        keyInput.value = verifiedKey;
+        showToast('Filled Admin demo credentials.');
+      });
+
+      // Submit
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alertBox.style.display = 'none';
+
+        const user = userInput.value.trim();
+        const pass = passInput.value;
+        const key = keyInput.value.trim();
+
+        const result = GymStore.loginStaff(user, pass, key);
+        if (!result.success) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = 'rgba(255, 82, 82, 0.15)';
+          alertBox.style.border = '1px solid #FF5252';
+          alertBox.style.color = '#FF5252';
+          alertBox.textContent = result.message || 'Staff authentication failed.';
+          return;
+        }
+
+        showToast('Staff authenticated successfully! Opening Admin Console...');
+        setTimeout(() => {
+          window.location.href = 'staff-dashboard.html';
+        }, 600);
+      });
+
+      // Staff Forgot Password Modal Handlers
+      const forgotStaffModal = document.getElementById('forgotStaffPasswordModal');
+      const openForgotStaffBtn = document.getElementById('openForgotStaffPassBtn');
+      const closeForgotStaffBtn = document.getElementById('closeForgotStaffModalBtn');
+      const cancelForgotStaffBtn = document.getElementById('cancelForgotStaffModalBtn');
+      const forgotStaffAlert = document.getElementById('forgotStaffAlert');
+      const resetStaffEmailInput = document.getElementById('resetStaffEmailInput');
+      const btnSendStaffResetCode = document.getElementById('btnSendStaffResetCode');
+      const simulatedStaffEmailBox = document.getElementById('simulatedStaffEmailBox');
+      const staffEmailBoxRecipient = document.getElementById('staffEmailBoxRecipient');
+      const staffEmailBoxCode = document.getElementById('staffEmailBoxCode');
+      const forgotStaffStep2 = document.getElementById('forgotStaffStep2');
+      const resetStaffCodeInput = document.getElementById('resetStaffCodeInput');
+      const resetStaffNewPass = document.getElementById('resetStaffNewPass');
+      const resetStaffConfirmPass = document.getElementById('resetStaffConfirmPass');
+      const btnSubmitStaffReset = document.getElementById('btnSubmitStaffResetPassword');
+
+      function openForgotStaffModal() {
+        if (forgotStaffAlert) forgotStaffAlert.style.display = 'none';
+        if (simulatedStaffEmailBox) simulatedStaffEmailBox.style.display = 'none';
+        if (forgotStaffStep2) forgotStaffStep2.style.display = 'none';
+        if (resetStaffEmailInput) resetStaffEmailInput.value = userInput.value || '';
+        if (resetStaffCodeInput) resetStaffCodeInput.value = '';
+        if (resetStaffNewPass) resetStaffNewPass.value = '';
+        if (resetStaffConfirmPass) resetStaffConfirmPass.value = '';
+        if (forgotStaffModal) forgotStaffModal.classList.add('active');
+        if (resetStaffEmailInput) setTimeout(() => resetStaffEmailInput.focus(), 150);
+      }
+
+      function closeForgotStaffModal() {
+        if (forgotStaffModal) forgotStaffModal.classList.remove('active');
+      }
+
+      if (openForgotStaffBtn) openForgotStaffBtn.addEventListener('click', openForgotStaffModal);
+      if (closeForgotStaffBtn) closeForgotStaffBtn.addEventListener('click', closeForgotStaffModal);
+      if (cancelForgotStaffBtn) cancelForgotStaffBtn.addEventListener('click', closeForgotStaffModal);
+
+      // Close on backdrop click
+      if (forgotStaffModal) {
+        forgotStaffModal.addEventListener('click', (e) => {
+          if (e.target === forgotStaffModal) closeForgotStaffModal();
+        });
+      }
+
+      // Handle Generate & Send Code for Staff
+      if (btnSendStaffResetCode) {
+        btnSendStaffResetCode.addEventListener('click', () => {
+          forgotStaffAlert.style.display = 'none';
+          const emailVal = (resetStaffEmailInput.value || '').trim();
+          if (!emailVal) {
+            forgotStaffAlert.style.display = 'block';
+            forgotStaffAlert.style.background = 'rgba(255, 82, 82, 0.15)';
+            forgotStaffAlert.style.border = '1px solid #FF5252';
+            forgotStaffAlert.style.color = '#FF5252';
+            forgotStaffAlert.textContent = 'Please enter your registered staff email or admin username.';
+            return;
+          }
+
+          const res = GymStore.requestPasswordReset(emailVal);
+          if (!res.success) {
+            forgotStaffAlert.style.display = 'block';
+            forgotStaffAlert.style.background = 'rgba(255, 82, 82, 0.15)';
+            forgotStaffAlert.style.border = '1px solid #FF5252';
+            forgotStaffAlert.style.color = '#FF5252';
+            forgotStaffAlert.textContent = res.message;
+            return;
+          }
+
+          // Show simulated email notification box
+          staffEmailBoxRecipient.textContent = res.email;
+          staffEmailBoxCode.textContent = res.code;
+          simulatedStaffEmailBox.style.display = 'block';
+
+          // Show Step 2
+          forgotStaffStep2.style.display = 'block';
+          resetStaffCodeInput.value = res.code;
+
+          forgotStaffAlert.style.display = 'block';
+          forgotStaffAlert.style.background = 'rgba(255, 170, 0, 0.15)';
+          forgotStaffAlert.style.border = '1px solid #FFAA00';
+          forgotStaffAlert.style.color = '#FFAA00';
+          forgotStaffAlert.textContent = `Verification email generated for ${res.email}. Enter the code below.`;
+          showToast(`Staff verification code sent to ${res.email}`);
+        });
+      }
+
+      // Handle Reset Staff Password Submit
+      if (btnSubmitStaffReset) {
+        btnSubmitStaffReset.addEventListener('click', () => {
+          forgotStaffAlert.style.display = 'none';
+          const emailVal = (resetStaffEmailInput.value || '').trim();
+          const codeVal = (resetStaffCodeInput.value || '').trim();
+          const newPassVal = resetStaffNewPass.value;
+          const confirmPassVal = resetStaffConfirmPass.value;
+
+          if (!codeVal) {
+            forgotStaffAlert.style.display = 'block';
+            forgotStaffAlert.style.background = 'rgba(255, 82, 82, 0.15)';
+            forgotStaffAlert.style.border = '1px solid #FF5252';
+            forgotStaffAlert.style.color = '#FF5252';
+            forgotStaffAlert.textContent = 'Please enter the 6-digit verification code.';
+            return;
+          }
+
+          if (!newPassVal || newPassVal.length < 6) {
+            forgotStaffAlert.style.display = 'block';
+            forgotStaffAlert.style.background = 'rgba(255, 82, 82, 0.15)';
+            forgotStaffAlert.style.border = '1px solid #FF5252';
+            forgotStaffAlert.style.color = '#FF5252';
+            forgotStaffAlert.textContent = 'Password must be at least 6 characters long.';
+            return;
+          }
+
+          if (newPassVal !== confirmPassVal) {
+            forgotStaffAlert.style.display = 'block';
+            forgotStaffAlert.style.background = 'rgba(255, 82, 82, 0.15)';
+            forgotStaffAlert.style.border = '1px solid #FF5252';
+            forgotStaffAlert.style.color = '#FF5252';
+            forgotStaffAlert.textContent = 'Passwords do not match. Please re-enter.';
+            return;
+          }
+
+          const res = GymStore.resetPassword(emailVal, codeVal, newPassVal);
+          if (!res.success) {
+            forgotStaffAlert.style.display = 'block';
+            forgotStaffAlert.style.background = 'rgba(255, 82, 82, 0.15)';
+            forgotStaffAlert.style.border = '1px solid #FF5252';
+            forgotStaffAlert.style.color = '#FF5252';
+            forgotStaffAlert.textContent = res.message;
+            return;
+          }
+
+          forgotStaffAlert.style.display = 'block';
+          forgotStaffAlert.style.background = 'rgba(0, 255, 102, 0.15)';
+          forgotStaffAlert.style.border = '1px solid #00FF66';
+          forgotStaffAlert.style.color = '#00FF66';
+          forgotStaffAlert.textContent = 'Staff password reset successfully! Updating login credentials...';
+
+          showToast('Staff password reset successfully! Ready to authenticate.');
+
+          // Auto-fill login form
+          userInput.value = res.username || emailVal;
+          passInput.value = newPassVal;
+
+          setTimeout(() => {
+            closeForgotStaffModal();
+          }, 1200);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

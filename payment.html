@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout & Payment | The Power Gym</title>
+  <meta name="description" content="Complete your gym membership subscription with instant Indian UPI payment or offline front desk cash voucher.">
+  
+  <link rel="icon" type="image/svg+xml" href="static/images/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar" id="mainNavbar">
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="static/images/logo.svg" alt="The Power Gym Logo">
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#plans">Membership Plans</a></li>
+          <li><a href="index.html#trainers">Trainers</a></li>
+          <li><a href="index.html#payment-info">Scan & Pay (UPI)</a></li>
+          <li><a href="index.html#bmi">BMI Tool</a></li>
+          <li><a href="login.html">Member Login</a></li>
+          <li><a href="staff-login.html" style="color: #FFAA00;">Staff Portal</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-primary btn-sm">Member Portal</a>
+        <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Checkout Section -->
+  <section class="section" style="min-height: calc(100vh - 160px); display: flex; align-items: center; padding: 50px 0;">
+    <div class="container" style="max-width: 960px;">
+      
+      <div style="text-align: center; margin-bottom: 30px;">
+        <span class="section-badge">Payment Gateway</span>
+        <h1 class="section-title">Complete Your <span class="neon-text">Membership Checkout</span></h1>
+        <p class="section-desc">Choose between instant online UPI scan or offline front desk payment.</p>
+      </div>
+
+      <div class="payment-showcase">
+        
+        <!-- Form Details -->
+        <div>
+          <!-- Plan Banner -->
+          <div style="background: rgba(0, 255, 102, 0.08); border: 1px solid var(--border-neon); border-radius: 12px; padding: 22px; margin-bottom: 24px;">
+            <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase;">Selected Plan:</div>
+            <h3 id="planNameDisplay" style="font-size: 1.5rem; margin: 4px 0; color: #fff;">Power Pro (3 Months)</h3>
+            <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+              <span style="font-size: 1.1rem; color: var(--neon-green); font-weight: 700;">Total Payable:</span>
+              <span id="planPriceDisplay" style="font-size: 2.2rem; font-weight: 900; color: var(--neon-green); font-family: var(--font-heading);">₹2,499</span>
+              <span id="planDurationDisplay" style="color: var(--text-muted); font-size: 0.9rem;">(3 Months Full Membership)</span>
+            </div>
+          </div>
+
+          <form id="paymentForm">
+            <!-- Change Plan Selection -->
+            <div class="form-group">
+              <label class="form-label" for="planSelector">Change / Switch Membership Plan</label>
+              <select id="planSelector" class="form-control">
+                <option value="1" data-name="Starter Beast (Monthly)" data-price="999" data-duration="1 Month Full Membership">Starter Beast (Monthly) - ₹999</option>
+                <option value="2" data-name="Power Pro (3 Months)" data-price="2499" data-duration="3 Months Full Membership" selected>Power Pro (3 Months) - ₹2,499 (Recommended)</option>
+                <option value="3" data-name="Iron Warrior (6 Months)" data-price="4499" data-duration="6 Months Full Membership">Iron Warrior (6 Months) - ₹4,499</option>
+                <option value="4" data-name="Legend Titan (1 Year)" data-price="7999" data-duration="12 Months Full Membership">Legend Titan (1 Year) - ₹7,999</option>
+              </select>
+            </div>
+
+            <!-- Member Identifier -->
+            <div class="form-group">
+              <label class="form-label" for="payMemberName">Member Name / Registered Mobile *</label>
+              <input type="text" id="payMemberName" class="form-control" placeholder="e.g. Rahul Sharma" required>
+            </div>
+
+            <!-- Payment Method Selection -->
+            <div class="form-group">
+              <label class="form-label">Select Payment Method *</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px;">
+                <label id="labelPayUpi" style="background: rgba(0, 255, 102, 0.08); border: 1px solid var(--border-neon); border-radius: 10px; padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                  <input type="radio" name="payment_method" value="UPI_QR" checked id="payMethodUpi">
+                  <span style="font-weight: 700; color: #fff; font-size: 0.92rem;">Online UPI QR</span>
+                </label>
+                <label id="labelPayCash" style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                  <input type="radio" name="payment_method" value="Offline_Cash" id="payMethodCash">
+                  <span style="font-weight: 700; color: #fff; font-size: 0.92rem;">Offline Front Desk</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- UPI Fields (Shown by default) -->
+            <div id="upiFormSection">
+              <div class="form-group">
+                <label class="form-label" for="checkoutUtr">Bank UTR / UPI Transaction Reference Number *</label>
+                <input type="text" id="checkoutUtr" class="form-control" placeholder="12-digit UPI reference number (e.g. 429038291048)">
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Found in your GPay / PhonePe / Paytm payment receipt under "UPI Ref No" or "UTR".</span>
+              </div>
+            </div>
+
+            <!-- Offline Cash Notice (Hidden by default) -->
+            <div id="offlineFormSection" style="display: none; background: rgba(255, 170, 0, 0.08); border: 1px solid rgba(255, 170, 0, 0.3); border-radius: 10px; padding: 16px; margin-bottom: 18px;">
+              <div style="color: #FFAA00; font-weight: 700; margin-bottom: 4px;">Offline Front Desk Instructions</div>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+                Generating a cash voucher logs your pending payment request. Please present this voucher at The Power Gym reception counter to complete your membership activation.
+              </p>
+            </div>
+
+            <button type="submit" id="submitPayBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 10px;">
+              Submit Payment Proof for Verification
+            </button>
+          </form>
+
+          <div style="margin-top: 20px; font-size: 0.82rem; color: var(--text-muted);">
+            All transactions are recorded with audit timestamps and verified by gym management.
+          </div>
+        </div>
+
+        <!-- QR Code Display Box -->
+        <div class="qr-box-card" id="qrDisplayBox">
+          <div style="display: inline-block; background: var(--neon-green-dim); border: 1px solid var(--border-neon); border-radius: 20px; padding: 4px 14px; font-size: 0.75rem; font-weight: 700; color: var(--neon-green); margin-bottom: 10px; text-transform: uppercase;">
+            Official Merchant Account
+          </div>
+          <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 4px;">Instant UPI QR Code</h3>
+          <p id="qrPlanSub" style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 14px;">Scan with Google Pay, PhonePe, Paytm, or BHIM</p>
+          
+          <div style="background: #fff; padding: 14px; border-radius: 14px; display: inline-block; margin-bottom: 14px; box-shadow: 0 0 25px rgba(0, 255, 102, 0.3);">
+            <img src="static/images/qr_code.jpg" alt="The Power Gym UPI QR" class="qr-image-display" style="width: 220px; height: 220px; display: block; object-fit: contain;">
+          </div>
+          
+          <div style="margin-bottom: 14px;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">Beneficiary: Gopinath (The Power Gym)</div>
+            <button type="button" class="btn-copy-upi upi-id-pill" data-upi="gopinath71845@oksbi" style="font-size: 0.95rem; cursor: pointer; background: transparent; border: 1px solid var(--border-neon);">
+              gopinath71845@oksbi [Copy]
+            </button>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a id="openUpiAppBtn" href="upi://pay?pa=gopinath71845@oksbi&pn=The%20Power%20Gym&am=2499&cu=INR&tn=The%20Power%20Gym%20Membership" class="btn btn-outline btn-sm">
+              Open in Installed UPI App
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Payment Confirmation Modal / Slip -->
+      <div id="paymentReceiptModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: #111713; border: 1px solid var(--neon-green); border-radius: 16px; padding: 36px 30px; max-width: 500px; width: 100%; box-shadow: 0 0 40px rgba(0, 255, 102, 0.35); text-align: center;">
+          <div style="width: 60px; height: 60px; background: rgba(0, 255, 102, 0.15); border: 2px solid var(--neon-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--neon-green);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h2 style="font-size: 1.8rem; margin-bottom: 8px; color: #fff;">Payment Submitted!</h2>
+          <p id="receiptSubText" style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 24px;">Your payment verification request has been queued in the system.</p>
+
+          <div style="background: #080C09; border: 1px solid var(--border-subtle); border-radius: 12px; padding: 18px; text-align: left; margin-bottom: 24px; font-size: 0.9rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="color: var(--text-muted);">Voucher / Ref ID:</span>
+              <strong id="receiptId" style="color: var(--neon-green); font-family: monospace;">#TPG-2001</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="color: var(--text-muted);">Plan:</span>
+              <strong id="receiptPlan" style="color: #fff;">Power Pro (3 Months)</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="color: var(--text-muted);">Amount:</span>
+              <strong id="receiptAmount" style="color: var(--neon-green);">₹2,499</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="color: var(--text-muted);">Method:</span>
+              <span id="receiptMethod" style="color: #fff;">Online UPI QR</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--text-muted);">Status:</span>
+              <span style="color: #FFAA00; font-weight: 700;">Pending Verification</span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <a href="dashboard.html" class="btn btn-primary" style="flex: 1;">Go to Member Portal</a>
+            <button type="button" onclick="window.print()" class="btn btn-outline" style="flex: 1;">Print Slip</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <img src="static/images/logo.svg" alt="The Power Gym Logo" style="height: 44px; margin-bottom: 18px;">
+          <p style="margin-bottom: 20px; font-size: 0.95rem; line-height: 1.6;">
+            The Power Gym is India's ultimate high-performance fitness destination. Equipped with world-class strength machines, certified trainers, and personalized nutrition protocols.
+          </p>
+          <div>
+            <span class="upi-id-pill btn-copy-upi" data-upi="gopinath71845@oksbi" title="Click to copy UPI ID">
+              UPI: gopinath71845@oksbi [Copy]
+            </span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html#plans">Membership Pricing</a></li>
+            <li><a href="index.html#trainers">Personal Trainers</a></li>
+            <li><a href="index.html#bmi">BMI Calculator</a></li>
+            <li><a href="login.html">Member Portal</a></li>
+            <li><a href="staff-login.html">Staff & Trainer Portal</a></li>
+            <li><a href="staff-register.html">Staff Registration</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Location & Contact</h4>
+          <p style="margin-bottom: 10px;"><strong>The Power Gym</strong><br>No. 18, Fitness Boulevard, Neon Arcade, Metro City, India</p>
+          <p style="margin-bottom: 8px;"><strong>Phone:</strong> +91 98765 43210</p>
+          <p style="margin-bottom: 8px;"><strong>Email:</strong> contact@thepowergym.in</p>
+          <p style="color: var(--neon-green); font-size: 0.9rem; font-weight: 700;">Merchant UPI: gopinath71845@oksbi</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 The Power Gym. All Rights Reserved.</div>
+        <div style="display: flex; gap: 20px;">
+          <a href="staff-login.html" style="color: #FFAA00;">Staff Console</a>
+          <a href="login.html">Member Login</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="static/js/gym-store.js"></script>
+  <script src="static/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const planSelector = document.getElementById('planSelector');
+      const planNameDisplay = document.getElementById('planNameDisplay');
+      const planPriceDisplay = document.getElementById('planPriceDisplay');
+      const planDurationDisplay = document.getElementById('planDurationDisplay');
+      const openUpiAppBtn = document.getElementById('openUpiAppBtn');
+      const payMethodUpi = document.getElementById('payMethodUpi');
+      const payMethodCash = document.getElementById('payMethodCash');
+      const upiFormSection = document.getElementById('upiFormSection');
+      const offlineFormSection = document.getElementById('offlineFormSection');
+      const checkoutUtr = document.getElementById('checkoutUtr');
+      const payMemberName = document.getElementById('payMemberName');
+      const submitPayBtn = document.getElementById('submitPayBtn');
+
+      // Autofill member name if logged in
+      const session = GymStore.getCurrentSession();
+      if (session) {
+        payMemberName.value = session.full_name || session.username;
+      }
+
+      // Check query string ?plan_id=
+      const urlParams = new URLSearchParams(window.location.search);
+      const planParam = urlParams.get('plan_id');
+      if (planParam && planSelector) {
+        planSelector.value = planParam;
+      }
+
+      function updatePlanUI() {
+        const selectedOpt = planSelector.options[planSelector.selectedIndex];
+        const name = selectedOpt.getAttribute('data-name');
+        const price = selectedOpt.getAttribute('data-price');
+        const duration = selectedOpt.getAttribute('data-duration');
+
+        planNameDisplay.textContent = name;
+        planPriceDisplay.textContent = `₹${parseInt(price).toLocaleString('en-IN')}`;
+        planDurationDisplay.textContent = `(${duration})`;
+        openUpiAppBtn.href = `upi://pay?pa=gopinath71845@oksbi&pn=The%20Power%20Gym&am=${price}&cu=INR&tn=The%20Power%20Gym%20${encodeURIComponent(name)}`;
+      }
+
+      planSelector.addEventListener('change', updatePlanUI);
+      updatePlanUI();
+
+      // Toggle Payment Method
+      function toggleMethod() {
+        if (payMethodUpi.checked) {
+          upiFormSection.style.display = 'block';
+          offlineFormSection.style.display = 'none';
+          checkoutUtr.required = true;
+          submitPayBtn.textContent = 'Submit Payment Proof for Verification';
+          document.getElementById('labelPayUpi').style.borderColor = 'var(--border-neon)';
+          document.getElementById('labelPayUpi').style.background = 'rgba(0, 255, 102, 0.08)';
+          document.getElementById('labelPayCash').style.borderColor = 'var(--border-subtle)';
+          document.getElementById('labelPayCash').style.background = 'rgba(255, 255, 255, 0.04)';
+        } else {
+          upiFormSection.style.display = 'none';
+          offlineFormSection.style.display = 'block';
+          checkoutUtr.required = false;
+          submitPayBtn.textContent = 'Generate Front Desk Cash Voucher';
+          document.getElementById('labelPayCash').style.borderColor = '#FFAA00';
+          document.getElementById('labelPayCash').style.background = 'rgba(255, 170, 0, 0.08)';
+          document.getElementById('labelPayUpi').style.borderColor = 'var(--border-subtle)';
+          document.getElementById('labelPayUpi').style.background = 'rgba(255, 255, 255, 0.04)';
+        }
+      }
+
+      payMethodUpi.addEventListener('change', toggleMethod);
+      payMethodCash.addEventListener('change', toggleMethod);
+
+      // Handle Submit
+      const form = document.getElementById('paymentForm');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const planId = parseInt(planSelector.value) || 2;
+        const selectedOpt = planSelector.options[planSelector.selectedIndex];
+        const planName = selectedOpt.getAttribute('data-name');
+        const price = selectedOpt.getAttribute('data-price');
+        const method = payMethodUpi.checked ? 'UPI_QR' : 'Offline_Cash';
+        const utr = checkoutUtr.value.trim();
+        const memberName = payMemberName.value.trim() || 'Gym Member';
+
+        const userId = session ? session.id : 1001;
+
+        const result = GymStore.submitPayment({
+          user_id: userId,
+          user_name: memberName,
+          plan_id: planId,
+          method: method,
+          utr: method === 'UPI_QR' ? utr : null,
+          notes: method === 'UPI_QR' ? `UPI Payment Ref ${utr}` : 'Front Desk Cash Voucher'
+        });
+
+        if (result.success) {
+          document.getElementById('receiptId').textContent = `#TPG-${result.payment.id}`;
+          document.getElementById('receiptPlan').textContent = planName;
+          document.getElementById('receiptAmount').textContent = `₹${parseInt(price).toLocaleString('en-IN')}`;
+          document.getElementById('receiptMethod').textContent = method === 'UPI_QR' ? 'Online UPI QR' : 'Front Desk Cash Voucher';
+          
+          if (method === 'Offline_Cash') {
+            document.getElementById('receiptSubText').textContent = 'Cash voucher generated! Present this voucher at the front desk.';
+          } else {
+            document.getElementById('receiptSubText').textContent = 'UPI receipt recorded! Staff will verify and activate your plan.';
+          }
+
+          const modal = document.getElementById('paymentReceiptModal');
+          modal.style.display = 'flex';
+          showToast('Payment submitted successfully!');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

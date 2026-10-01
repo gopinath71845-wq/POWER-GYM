@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}The Power Gym | Elite Fitness & Strength Center{% endblock %}</title>
+  <meta name="description" content="{% block meta_desc %}The Power Gym - Premier high-octane fitness center with elite powerlifting, cardio, personal trainers, and customized nutrition in India.{% endblock %}">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/logo.svg') }}">
+  
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="mainNavbar">
+    <div class="container">
+      <a href="{{ url_for('index') }}" class="nav-brand">
+        <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="The Power Gym Logo">
+      </a>
+
+      <!-- Desktop Links -->
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
+          <li><a href="{{ url_for('index') }}#plans">Membership Plans</a></li>
+          <li><a href="{{ url_for('index') }}#trainers">Trainers</a></li>
+          <li><a href="{{ url_for('index') }}#payment-info">Scan & Pay (UPI)</a></li>
+          <li><a href="{{ url_for('index') }}#bmi">BMI Tool</a></li>
+          <li><a href="{{ url_for('index') }}#contact">Contact</a></li>
+          
+          {% if current_user.is_authenticated %}
+            {% if current_user.role == 'staff' %}
+              <li><a href="{{ url_for('staff_dashboard') }}" style="color: #FFAA00; font-weight: 700;">Staff Console</a></li>
+            {% else %}
+              <li><a href="{{ url_for('customer_dashboard') }}" style="color: #00FF66; font-weight: 700;">Member Portal</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('logout') }}" style="color: #ff6666;">Logout</a></li>
+          {% else %}
+            <li><a href="{{ url_for('login_customer') }}" class="nav-portal-badge nav-portal-member {% if request.endpoint == 'login_customer' %}active{% endif %}">Member Portal</a></li>
+            <li><a href="{{ url_for('login_staff') }}" class="nav-portal-badge nav-portal-staff {% if request.endpoint == 'login_staff' %}active{% endif %}">Staff Portal</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="nav-actions">
+        {% if current_user.is_authenticated %}
+          {% if current_user.role == 'staff' %}
+            <a href="{{ url_for('staff_dashboard') }}" class="btn btn-outline btn-sm" style="border-color: #FFAA00; color: #FFAA00; font-weight: 700;">Staff Console</a>
+          {% else %}
+            <a href="{{ url_for('customer_dashboard') }}" class="btn btn-primary btn-sm">Member Portal</a>
+          {% endif %}
+          <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm" style="color: #ff6666;">Logout</a>
+        {% else %}
+          <a href="{{ url_for('register_customer') }}" class="btn btn-primary btn-sm">Join Now</a>
+        {% endif %}
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Flash Messages Alert -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category if category != 'message' else 'info' }}">
+            <span>{{ message }}</span>
+            <button class="alert-close" onclick="this.parentElement.remove();">&times;</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Main Content Block -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="The Power Gym Logo" style="height: 44px; margin-bottom: 18px;">
+          <p style="margin-bottom: 20px; font-size: 0.95rem; line-height: 1.6;">
+            The Power Gym is India's ultimate high-performance fitness destination. Equipped with world-class strength machines, certified trainers, and personalized nutrition protocols.
+          </p>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <span class="upi-id-pill btn-copy-upi" data-upi="gopinath71845@oksbi" title="Click to copy UPI ID">
+              UPI: gopinath71845@oksbi [Copy]
+            </span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('index') }}#plans">Membership Pricing</a></li>
+            <li><a href="{{ url_for('index') }}#trainers">Personal Trainers</a></li>
+            <li><a href="{{ url_for('index') }}#bmi">BMI Calculator</a></li>
+            <li><a href="{{ url_for('login_customer') }}">Member Portal</a></li>
+            <li><a href="{{ url_for('login_staff') }}">Staff & Trainer Portal</a></li>
+            <li><a href="{{ url_for('register_staff') }}">Staff Registration</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Hours & Facility</h4>
+          <ul>
+            <li><strong>Mon - Sat:</strong> 5:30 AM - 10:30 PM</li>
+            <li><strong>Sunday:</strong> 6:00 AM - 8:00 PM</li>
+            <li>Heavy Powerlifting Zone</li>
+            <li>Olympic Lifting Platforms</li>
+            <li>Steam, Sauna & Hot Showers</li>
+            <li>Dedicated Nutrition Cafe</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Location & Contact</h4>
+          <p style="margin-bottom: 10px;"><strong>The Power Gym</strong><br>No. 18, Fitness Boulevard, Neon Arcade, Metro City, India</p>
+          <p style="margin-bottom: 8px;"><strong>Phone:</strong> +91 98765 43210</p>
+          <p style="margin-bottom: 8px;"><strong>Email:</strong> contact@thepowergym.in</p>
+          <p style="color: var(--neon-green); font-size: 0.9rem; font-weight: 700;">Merchant UPI: gopinath71845@oksbi</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; {{ current_year }} The Power Gym. All Rights Reserved. Built with Python, SQL, HTML & CSS.</div>
+        <div style="display: flex; gap: 20px;">
+          <a href="{{ url_for('login_staff') }}" style="color: #FFAA00;">Staff Console</a>
+          <a href="{{ url_for('index') }}#contact">Help & Support</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

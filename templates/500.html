@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Server Error | The Power Gym{% endblock %}
+
+{% block content %}
+<section class="section" style="min-height: calc(100vh - 160px); display: flex; align-items: center; text-align: center;">
+  <div class="container" style="max-width: 600px;">
+    <div style="background: var(--bg-card); border: 1px solid #FF5252; border-radius: var(--radius-lg); padding: 50px 30px; box-shadow: 0 0 25px rgba(255, 82, 82, 0.25);">
+      <div style="font-size: 5rem; font-weight: 900; color: #FF5252; font-family: var(--font-heading); line-height: 1; margin-bottom: 14px;">
+        500
+      </div>
+      <h1 style="font-size: 2rem; margin-bottom: 14px;">Internal Server Error</h1>
+      <p style="color: var(--text-secondary); margin-bottom: 30px; line-height: 1.6;">
+        An unexpected server error occurred while processing your request. Please return to the homepage or try again in a few moments.
+      </p>
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Return to Home</a>
+        <a href="{{ url_for('customer_dashboard') }}" class="btn btn-outline">My Portal</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
